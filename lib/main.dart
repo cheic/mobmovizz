@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobmovizz/core/di/injection.dart';
-import 'package:mobmovizz/features/movies/bloc/bloc/overview_bloc.dart';
-import 'package:mobmovizz/features/movies/view/overview_view.dart';
+import 'package:mobmovizz/core/theme/colors.dart';
+import 'package:mobmovizz/features/genres/movies_genre_list/bloc/movie_genres_bloc.dart';
+import 'package:mobmovizz/features/home/popular_movies/bloc/popular_movies_bloc.dart';
+import 'package:mobmovizz/core/widgets/bottom_nav_items.dart';
+import 'package:mobmovizz/core/widgets/navigation/nav_bar_cubit.dart';
+import 'package:mobmovizz/core/widgets/navigation/nav_bar_items.dart';
+import 'package:mobmovizz/core/widgets/navigation/nav_bar_state.dart';
+import 'package:mobmovizz/features/home/upcomings/bloc/upcomings_bloc.dart';
+import 'package:mobmovizz/features/home/upcomings/data/service/upcomings_service.dart';
 
 import 'core/theme/text_theme.dart';
 import 'core/theme/theme.dart';
-import 'features/movies/data/overview_service.dart';
+import 'features/home/popular_movies/data/service/popular_movies_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,12 +30,22 @@ class MyApp extends StatelessWidget {
     final brightness = View.of(context).platformDispatcher.platformBrightness;
     TextTheme textTheme = createTextTheme(context, "Roboto", "Roboto");
     MaterialTheme theme = MaterialTheme(textTheme);
-    return MaterialApp(
-      title: 'MobMovizz',
-      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-      home: BlocProvider(
-        create: (context) => DiscoverBloc(GetIt.I<DiscoverService>()),
-        child: const DiscoverView(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PopularMoviesBloc>(
+          create: (context) => PopularMoviesBloc(GetIt.I<PopularMoviesService>())
+            ..add(FetchPopularMovies()),
+        ),
+        BlocProvider<UpcomingsBloc>(
+          create: (context) => UpcomingsBloc(GetIt.I<UpcomingService>())
+            ..add(FetchUpcomings()),
+        ),
+        BlocProvider<NavigationCubit>(create: (BuildContext context) => NavigationCubit(),)
+      ],
+      child: MaterialApp(
+        title: 'MobMovizz',
+        theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+        home:  const MyHomePage(title: '',),
       ),
     );
   }
@@ -44,40 +61,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+      body: BlocBuilder<NavigationCubit, NavigationState>(
+        builder: (context, state) {
+          // Return the appropriate screen based on the selected navbar item
+          return bottomNavScreen[state.index];
+        },
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+        bottomNavigationBar: BlocConsumer<NavigationCubit, NavigationState>(
+            builder: (context, state) {
+              return BottomNavigationBar(
+                items: bottomNavItems,
+                currentIndex: state.index,
+                selectedItemColor: Theme.of(context).colorScheme.primary,
+                unselectedItemColor: Colors.grey,
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: surfaceDim,
+                elevation: 0,
+                onTap: (index) => _onNavItemTapped(context, index),
+              );
+            },
+            listener: (context, state) {}),
     );
+  }
+
+  // Handle tap logic in one place
+  void _onNavItemTapped(BuildContext context, int index) {
+    NavbarItem item = NavbarItem.values[index]; // Get NavbarItem from index
+    BlocProvider.of<NavigationCubit>(context).getNavBarItem(item);
   }
 }

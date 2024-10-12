@@ -45,7 +45,10 @@ dependencies:
   equatable: ^2.0.5
   internet_connection_checker: ^1.0.0+1
   bloc: ^8.1.4
-  carousel_slider: ^4.2.1
+  carousel_slider_plus: ^6.0.0
+  cached_network_image: ^3.4.1
+  rive: ^0.13.4
+  flutter_platform_widgets: ^7.0.1
 
 
 dev_dependencies:
