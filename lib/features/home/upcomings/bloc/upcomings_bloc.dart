@@ -20,14 +20,6 @@ class UpcomingsBloc extends Bloc<UpcomingsEvent, UpcomingsState> {
     emit(UpcomingsLoading());
     final Either<Failure, UpcomingModel> failureOrMovies =
         await upcomingService.getUpcomings();
-        failureOrMovies.fold((l) {
-          
-        },
-        (r){
-          print(" RRRRR $r");
-        });
-
-      
     emit(failureOrMovies.fold((failure) => UpcomingsError(failure.message ?? ""),
         (data) => UpcomingsLoaded(data)));
   }

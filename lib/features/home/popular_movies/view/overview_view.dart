@@ -17,7 +17,7 @@ class _DiscoverViewState extends State<DiscoverView> {
   final PageController _pageController = PageController(initialPage: 0);
   int currentPageIndex = 0;
   double currentPage = 0.0;
-  List items = List.generate(10, (index) => 'Index $index');
+
 
   @override
   initState() {

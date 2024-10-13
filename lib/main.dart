@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobmovizz/core/di/injection.dart';
 import 'package:mobmovizz/core/theme/colors.dart';
+import 'package:mobmovizz/features/genres/movies_by_genre/bloc/movies_by_genre_bloc.dart';
+import 'package:mobmovizz/features/genres/movies_by_genre/data/movies_by_genre_service.dart';
 import 'package:mobmovizz/features/genres/movies_genre_list/bloc/movie_genres_bloc.dart';
+import 'package:mobmovizz/features/genres/movies_genre_list/data/service/movie_genre_list_service.dart';
 import 'package:mobmovizz/features/home/popular_movies/bloc/popular_movies_bloc.dart';
 import 'package:mobmovizz/core/widgets/bottom_nav_items.dart';
 import 'package:mobmovizz/core/widgets/navigation/nav_bar_cubit.dart';
@@ -11,6 +14,8 @@ import 'package:mobmovizz/core/widgets/navigation/nav_bar_items.dart';
 import 'package:mobmovizz/core/widgets/navigation/nav_bar_state.dart';
 import 'package:mobmovizz/features/home/upcomings/bloc/upcomings_bloc.dart';
 import 'package:mobmovizz/features/home/upcomings/data/service/upcomings_service.dart';
+import 'package:mobmovizz/features/movie_details/bloc/movie_details_bloc.dart';
+import 'package:mobmovizz/features/movie_details/data/movie_details_service.dart';
 
 import 'core/theme/text_theme.dart';
 import 'core/theme/theme.dart';
@@ -40,11 +45,23 @@ class MyApp extends StatelessWidget {
           create: (context) => UpcomingsBloc(GetIt.I<UpcomingService>())
             ..add(FetchUpcomings()),
         ),
-        BlocProvider<NavigationCubit>(create: (BuildContext context) => NavigationCubit(),)
+        BlocProvider<NavigationCubit>(create: (BuildContext context) => NavigationCubit(),),
+        BlocProvider(
+          create: (context) => MovieGenresBloc(GetIt.I<MovieGenreListService>())
+            ..add(FetchGenres()),
+        ),
+        BlocProvider(
+          create: (context) => MoviesByGenreBloc(GetIt.I<MoviesByGenreService>()),
+        ),
+         BlocProvider(
+          create: (context) => MovieDetailsBloc(GetIt.I<MovieDetailsService>()),
+        ),
       ],
       child: MaterialApp(
         title: 'MobMovizz',
-        theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+        debugShowCheckedModeBanner: false,
+        theme: theme.light() ,
+        darkTheme: theme.dark(),
         home:  const MyHomePage(title: '',),
       ),
     );

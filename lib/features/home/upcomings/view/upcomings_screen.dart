@@ -4,19 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobmovizz/features/home/upcomings/bloc/upcomings_bloc.dart';
 
-class UpcomingScreen extends StatefulWidget {
+class UpcomingScreen extends StatelessWidget {
   const UpcomingScreen({super.key});
-
-  @override
-  State<UpcomingScreen> createState() => _UpcomingScreenState();
-}
-
-class _UpcomingScreenState extends State<UpcomingScreen> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<UpcomingsBloc>().add(FetchUpcomings());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,17 +34,19 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                   (item) => Container(
                     margin: const EdgeInsets.all(5.0),
                     child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(5.0)),
                       child: Stack(
                         children: <Widget>[
                           CachedNetworkImage(
-                                  progressIndicatorBuilder:
-                                      (context, url, progress) => Center(
-                                    child: CircularProgressIndicator(
-                                      value: progress.progress,
-                                    ),
-                                  ),
-                                  imageUrl: 'https://image.tmdb.org/t/p/w500${item.posterPath}',
+                            progressIndicatorBuilder:
+                                (context, url, progress) => Center(
+                              child: CircularProgressIndicator(
+                                value: progress.progress,
+                              ),
+                            ),
+                            imageUrl:
+                                'https://image.tmdb.org/t/p/w500${item.posterPath}',
                             fit: BoxFit.cover,
                             width: double.infinity,
                           ),
@@ -63,7 +54,8 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
                       ),
                     ),
                   ),
-                ).toList(),
+                )
+                .toList(),
           );
         } else if (state is UpcomingsError) {
           return Center(child: Text('Error: ${state.message}'));

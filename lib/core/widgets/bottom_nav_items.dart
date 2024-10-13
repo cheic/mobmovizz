@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobmovizz/features/favorites/view/favorites_view.dart';
 import 'package:mobmovizz/features/genres/movies_genre_list/view/movie_genre_list_view.dart';
+import 'package:mobmovizz/features/search/view/seach_movie.dart';
 
 import '../../features/home/popular_movies/view/overview_view.dart';
 
@@ -38,6 +40,6 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
 const List<Widget> bottomNavScreen = <Widget>[
   DiscoverView(),
   MovieGenreListView(),
-  Text('Index 2: Search'),
-  Text('Index 3: Favourite'),
+  SearchMovieView(),
+  FavoritesView(),
 ];

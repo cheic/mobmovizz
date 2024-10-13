@@ -1,17 +1,34 @@
-import 'package:mobmovizz/features/home/popular_movies/data/models/popular_movie_model.dart';
 
-abstract class MoviesByGenreState {}
+part of "movies_by_genre_bloc.dart";
+
+abstract class MoviesByGenreState  extends Equatable{
+  const MoviesByGenreState();
+  @override
+  List<Object> get props => [];
+}
 
 class MoviesByGenreInitial extends MoviesByGenreState {}
 
 class MoviesByGenreLoading extends MoviesByGenreState {}
 
 class MoviesByGenreLoaded extends MoviesByGenreState {
-  final PopularMovieModel movies;
-  MoviesByGenreLoaded(this.movies);
+  final MovieByGenreModel movies;
+  final int genreId;
+  final int currentPage;
+  final int totalPages; 
+
+  const MoviesByGenreLoaded({
+    required this.movies,
+    required this.genreId, 
+    required this.currentPage,
+    required this.totalPages,
+  });
+
+  @override
+  List<Object> get props => [movies, genreId, currentPage, totalPages];
 }
 
 class MoviesByGenreError extends MoviesByGenreState {
   final String message;
-  MoviesByGenreError(this.message);
+ const MoviesByGenreError(this.message);
 }
