@@ -8,6 +8,7 @@ import 'package:mobmovizz/features/home/popular_movies/bloc/popular_movies_bloc.
 import 'package:mobmovizz/features/home/popular_movies/data/service/popular_movies_service.dart';
 import 'package:mobmovizz/features/home/upcomings/data/service/upcomings_service.dart';
 import 'package:mobmovizz/features/movie_details/data/movie_details_service.dart';
+import 'package:mobmovizz/features/search/data/search_movie_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 GetIt sl = GetIt.instance;
@@ -38,6 +39,7 @@ Future<void> initInjection() async {
   sl.registerLazySingleton(() => PopularMoviesBloc(sl<PopularMoviesService>()));
   sl.registerLazySingleton(() => MoviesByGenreService(sl<ApiService>()));
   sl.registerLazySingleton(() => MovieDetailsService(sl<ApiService>()));
+  sl.registerLazySingleton(() => SearchMovieService(sl<ApiService>()));
 }
 
 void resetAppModule() {

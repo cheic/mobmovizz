@@ -37,9 +37,9 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
   ),
 ];
 
-const List<Widget> bottomNavScreen = <Widget>[
-  DiscoverView(),
-  MovieGenreListView(),
+List<Widget> bottomNavScreen = <Widget>[
+  const DiscoverView(),
+  const MovieGenreListView(),
   SearchMovieView(),
-  FavoritesView(),
+  const FavoritesView(),
 ];

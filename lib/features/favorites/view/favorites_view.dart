@@ -16,7 +16,7 @@ class _FavoritesViewState extends State<FavoritesView> {
       appBar: mainAppBar(title: 'MOBMOVIZZ'),
       backgroundColor: surfaceDim,
       body: Center(
-        child: Text("COMING SOON",  style: Theme.of(context).textTheme.displayLarge?.copyWith(color: Colors.white)),
+        child: Text("COMING SOON",  style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Colors.white)),
       ),
     );
   }

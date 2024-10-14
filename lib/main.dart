@@ -16,6 +16,8 @@ import 'package:mobmovizz/features/home/upcomings/bloc/upcomings_bloc.dart';
 import 'package:mobmovizz/features/home/upcomings/data/service/upcomings_service.dart';
 import 'package:mobmovizz/features/movie_details/bloc/movie_details_bloc.dart';
 import 'package:mobmovizz/features/movie_details/data/movie_details_service.dart';
+import 'package:mobmovizz/features/search/bloc/search_movie_bloc.dart';
+import 'package:mobmovizz/features/search/data/search_movie_service.dart';
 
 import 'core/theme/text_theme.dart';
 import 'core/theme/theme.dart';
@@ -38,31 +40,39 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<PopularMoviesBloc>(
-          create: (context) => PopularMoviesBloc(GetIt.I<PopularMoviesService>())
-            ..add(FetchPopularMovies()),
+          create: (context) =>
+              PopularMoviesBloc(GetIt.I<PopularMoviesService>())
+                ..add(FetchPopularMovies()),
         ),
         BlocProvider<UpcomingsBloc>(
-          create: (context) => UpcomingsBloc(GetIt.I<UpcomingService>())
-            ..add(FetchUpcomings()),
+          create: (context) =>
+              UpcomingsBloc(GetIt.I<UpcomingService>())..add(FetchUpcomings()),
         ),
-        BlocProvider<NavigationCubit>(create: (BuildContext context) => NavigationCubit(),),
+        BlocProvider<NavigationCubit>(
+          create: (BuildContext context) => NavigationCubit(),
+        ),
         BlocProvider(
           create: (context) => MovieGenresBloc(GetIt.I<MovieGenreListService>())
             ..add(FetchGenres()),
         ),
         BlocProvider(
-          create: (context) => MoviesByGenreBloc(GetIt.I<MoviesByGenreService>()),
+          create: (context) =>
+              MoviesByGenreBloc(GetIt.I<MoviesByGenreService>()),
         ),
-         BlocProvider(
+        BlocProvider(
           create: (context) => MovieDetailsBloc(GetIt.I<MovieDetailsService>()),
+        ),BlocProvider(
+          create: (context) => SearchMovieBloc(GetIt.I<SearchMovieService>()),
         ),
       ],
       child: MaterialApp(
         title: 'MobMovizz',
         debugShowCheckedModeBanner: false,
-        theme: theme.light() ,
+        theme: theme.light(),
         darkTheme: theme.dark(),
-        home:  const MyHomePage(title: '',),
+        home: const MyHomePage(
+          title: '',
+        ),
       ),
     );
   }
@@ -78,30 +88,49 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: surfaceDim,
       body: BlocBuilder<NavigationCubit, NavigationState>(
         builder: (context, state) {
-          // Return the appropriate screen based on the selected navbar item
-          return bottomNavScreen[state.index];
-        },
-      ),
-        bottomNavigationBar: BlocConsumer<NavigationCubit, NavigationState>(
-            builder: (context, state) {
-              return BottomNavigationBar(
-                items: bottomNavItems,
-                currentIndex: state.index,
-                selectedItemColor: Theme.of(context).colorScheme.primary,
-                unselectedItemColor: Colors.grey,
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: surfaceDim,
-                elevation: 0,
-                onTap: (index) => _onNavItemTapped(context, index),
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: Container(
+                  color: Colors
+                      .transparent, // You can change this to your desired background color
+                  child: child,
+                ),
               );
             },
-            listener: (context, state) {}),
+            child: KeyedSubtree(
+              key: ValueKey<int>(state.index),
+              child: Container(
+                color: Colors
+                    .blue, // Change to the desired background color for each child screen
+                child: bottomNavScreen[state.index],
+              ),
+            ),
+          );
+        },
+      ),
+      bottomNavigationBar: BlocConsumer<NavigationCubit, NavigationState>(
+          builder: (context, state) {
+            return BottomNavigationBar(
+              items: bottomNavItems,
+              currentIndex: state.index,
+              selectedItemColor: Theme.of(context).colorScheme.primary,
+              unselectedItemColor: Colors.grey,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: surfaceDim,
+              elevation: 0,
+              onTap: (index) => _onNavItemTapped(context, index),
+            );
+          },
+          listener: (context, state) {}),
     );
   }
 

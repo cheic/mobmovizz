@@ -62,6 +62,14 @@ class _MovieGenreListViewState extends State<MovieGenreListView> {
     }
   }
 
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
+
   void _fetchMoviesForGenre(int genreId) {
     context.read<MoviesByGenreBloc>().add(FetchMoviesByGenre(genreId));
   }
@@ -103,16 +111,15 @@ class _MovieGenreListViewState extends State<MovieGenreListView> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          backgroundColor: isSelected
-                              ? royalBlue
-                              : snow,
-                          side: BorderSide.none, 
+                          backgroundColor: isSelected ? royalBlue : snow,
+                          side: BorderSide.none,
                           label: Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                                horizontal: 6, vertical: 3),
                             child: Text(
                               genre.name ?? "",
                               style: TextStyle(
+                                fontSize: 13,
                                 color: isSelected ? Colors.white : royalBlue,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -146,25 +153,28 @@ class _MovieGenreListViewState extends State<MovieGenreListView> {
                           itemBuilder: (context, index) {
                             final movie = state.movies.results?[index];
                             return ListTile(
-                              title: CachedNetworkImage(
-                                maxWidthDiskCache: 1000,
-                                maxHeightDiskCache: 1000,
-                                progressIndicatorBuilder:
-                                    (context, url, progress) => Center(
-                                  child: CircularProgressIndicator(
-                                    value: progress.progress,
+                              title: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                                child: CachedNetworkImage(
+                                  maxWidthDiskCache: 1000,
+                                  maxHeightDiskCache: 1000,
+                                  progressIndicatorBuilder:
+                                      (context, url, progress) => Center(
+                                    child: CircularProgressIndicator(
+                                      value: progress.progress,
+                                    ),
                                   ),
+                                  imageUrl:
+                                      'https://image.tmdb.org/t/p/w500${movie!.posterPath}',
+                                  fit: BoxFit.cover,
                                 ),
-                                imageUrl:
-                                    'https://image.tmdb.org/t/p/w500${movie!.posterPath}',
-                                fit: BoxFit.cover,
-                                
                               ),
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => MovieDetailsView(
-                                        movieId: movie.id!),
+                                    builder: (context) =>
+                                        MovieDetailsView(movieId: movie.id!),
                                   ),
                                 );
                               },
@@ -188,6 +198,15 @@ class _MovieGenreListViewState extends State<MovieGenreListView> {
             return const Center(child: Text('Search for genres'));
           }
         },
+      ),
+      floatingActionButton: AnimatedOpacity(
+        opacity: _isAtTop ? 0.0 : 1.0,
+        duration: const Duration(milliseconds: 300),
+        child: FloatingActionButton(
+          onPressed: _scrollToTop,
+          backgroundColor: royalBlue,
+          child: const Icon(Icons.arrow_upward, color: Colors.white,),
+        ),
       ),
     );
   }

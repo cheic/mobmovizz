@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mobmovizz/core/theme/colors.dart';
 import 'package:mobmovizz/core/utils/format_date.dart';
 import 'package:mobmovizz/core/utils/format_minutes.dart';
-import 'package:mobmovizz/core/widgets/app_bar.dart';
+import 'package:mobmovizz/core/widgets/circular_progress.dart';
 import 'package:mobmovizz/features/movie_details/bloc/movie_details_bloc.dart';
 import 'package:mobmovizz/features/movie_details/data/movie_details_service.dart';
 
@@ -24,16 +24,24 @@ class MovieDetailsView extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: surfaceDim,
           iconTheme: const IconThemeData(
-            color: Colors.white, //change your color here
+            color: Colors.white,
           ),
-          title: const Text("Details", style: TextStyle(color: Colors.white),),
+          title: const Text(
+            "Details",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
         body: BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
           builder: (context, state) {
             if (state is MovieDetailsLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is MovieDetailsError) {
-              return Center(child: Text(state.message, style: const TextStyle(color: Colors.white),));
+              return Center(
+                child: Text(
+                  state.message,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              );
             } else if (state is MovieDetailsLoaded) {
               final movie = state.movieDetailsModel;
               return SingleChildScrollView(
@@ -41,12 +49,58 @@ class MovieDetailsView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (movie.backdropPath != null)
-                      CachedNetworkImage(
-                        imageUrl:
-                            'https://image.tmdb.org/t/p/w500${movie.backdropPath}',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 300,
+                      Stack(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl:
+                                'https://image.tmdb.org/t/p/w500${movie.backdropPath}',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 230,
+                            progressIndicatorBuilder:
+                                (context, url, progress) => Center(
+                              child: mainCircularProgress(
+                                value: progress.progress,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black.withOpacity(0.5),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [
+                                    Colors.black.withOpacity(0.7),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -55,7 +109,13 @@ class MovieDetailsView extends StatelessWidget {
                         children: [
                           Text(
                             movie.title ?? 'No Title',
-                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Colors.white),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -65,16 +125,25 @@ class MovieDetailsView extends StatelessWidget {
                                 .titleMedium
                                 ?.copyWith(
                                   fontStyle: FontStyle.italic,
-                                  color: Colors.white
+                                  color: Colors.white70,
                                 ),
                           ),
                           const SizedBox(height: 16),
                           Text(
                             'Overview',
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                           const SizedBox(height: 8),
-                          Text(movie.overview ?? 'No overview available', style: const TextStyle(color: Colors.white),),
+                          Text(
+                            movie.overview ?? 'No overview available',
+                            style: const TextStyle(color: Colors.white),
+                          ),
                           const SizedBox(height: 16),
                           Wrap(
                             runSpacing: 10,
@@ -98,11 +167,13 @@ class MovieDetailsView extends StatelessWidget {
                           const SizedBox(height: 16),
                           _buildInfoRow(
                               'Release Date',
-                              formatReleaseDateWithMonthName(movie.releaseDate?.toString()) ??
+                              formatReleaseDateWithMonthName(
+                                      movie.releaseDate?.toString()) ??
                                   'Unknown'),
                           _buildInfoRow(
                               'Runtime', formatRuntime(movie.runtime!) ?? ""),
-                          _buildInfoRow('Vote Average',
+                          _buildInfoRow(
+                              'Vote Average',
                               '${movie.voteAverage?.toStringAsFixed(1) ?? 'N/A'}/10'),
                           _buildInfoRow('Budget',
                               '\$${movie.budget?.toString() ?? 'N/A'}'),
@@ -128,8 +199,13 @@ class MovieDetailsView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-          Text(value, style: const TextStyle(color: Colors.white),),
+          Text(label,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.white)),
+          Text(
+            value,
+            style: const TextStyle(color: Colors.white),
+          ),
         ],
       ),
     );
