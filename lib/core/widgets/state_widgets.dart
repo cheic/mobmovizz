@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../common/app_dimensions.dart';
 import 'app_spacing.dart';
+import 'package:mobmovizz/l10n/app_localizations.dart';
 
 /// Widget for displaying empty states with consistent styling
 class EmptyStateWidget extends StatelessWidget {
@@ -184,8 +185,8 @@ class LoadingStateWidget extends StatelessWidget {
   }
 }
 
-/// Widget for no internet connection state
-class NoInternetWidget extends StatelessWidget {
+/// Widget for no internet connection state with animation
+class NoInternetWidget extends StatefulWidget {
   final VoidCallback? onRetry;
 
   const NoInternetWidget({
@@ -194,21 +195,115 @@ class NoInternetWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<NoInternetWidget> createState() => _NoInternetWidgetState();
+}
+
+class _NoInternetWidgetState extends State<NoInternetWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _pulseAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+    _pulseAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.2,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+    _animationController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return EmptyStateWidget(
-      icon: Icons.wifi_off,
-      title: 'No Internet Connection',
-      subtitle: 'Please check your connection and try again',
-      action: onRetry != null
-          ? ElevatedButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
-              style: ElevatedButton.styleFrom(
-                padding: AppPadding.buttonDefault,
+    final localizations = AppLocalizations.of(context);
+    
+    return Center(
+      child: Padding(
+        padding: AppPadding.allXl,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Icône animée
+            AnimatedBuilder(
+              animation: _pulseAnimation,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _pulseAnimation.value,
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.error.withOpacity(0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.wifi_off_rounded,
+                      size: AppDimensions.iconSizeXLarge,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                );
+              },
+            ),
+            
+            AppSpacing.verticalLg,
+            
+            // Titre traduit
+            Text(
+              localizations?.no_internet_connection ?? 'Pas de connexion internet',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.w600,
               ),
-            )
-          : null,
+              textAlign: TextAlign.center,
+            ),
+            
+            AppSpacing.verticalSm,
+            
+            // Sous-titre traduit
+            Text(
+              localizations?.check_your_connection ?? 'Vérifiez votre connexion et réessayez',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            
+            if (widget.onRetry != null) ...[
+              AppSpacing.verticalXl,
+              ElevatedButton.icon(
+                onPressed: widget.onRetry,
+                icon: const Icon(Icons.refresh_rounded),
+                label: Text(localizations?.retry ?? 'Réessayer'),
+                style: ElevatedButton.styleFrom(
+                  padding: AppPadding.buttonDefault,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

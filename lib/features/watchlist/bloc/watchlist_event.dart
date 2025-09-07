@@ -19,6 +19,8 @@ class AddToWatchlistEvent extends WatchlistEvent {
   final String? releaseDate;
   final DateTime? reminderDate;
   final bool notifyAgain;
+  final String? notificationTitle;
+  final String? notificationBody;
 
   const AddToWatchlistEvent({
     required this.movieId,
@@ -27,10 +29,21 @@ class AddToWatchlistEvent extends WatchlistEvent {
     this.releaseDate,
     this.reminderDate,
     this.notifyAgain = true,
+    this.notificationTitle,
+    this.notificationBody,
   });
 
   @override
-  List<Object> get props => [movieId, title, posterPath ?? '', releaseDate ?? '', reminderDate ?? DateTime.now(), notifyAgain];
+  List<Object> get props => [
+    movieId,
+    title,
+    posterPath ?? '',
+    releaseDate ?? '',
+    reminderDate ?? DateTime.now(),
+    notifyAgain,
+    notificationTitle ?? '',
+    notificationBody ?? '',
+  ];
 }
 
 class RemoveFromWatchlistEvent extends WatchlistEvent {
@@ -45,12 +58,21 @@ class RemoveFromWatchlistEvent extends WatchlistEvent {
 class UpdateWatchlistItemEvent extends WatchlistEvent {
   final int movieId;
   final WatchlistItem updatedItem;
+  final String? notificationTitle;
+  final String? notificationBody;
 
   const UpdateWatchlistItemEvent({
     required this.movieId,
     required this.updatedItem,
+    this.notificationTitle,
+    this.notificationBody,
   });
 
   @override
-  List<Object> get props => [movieId, updatedItem];
+  List<Object> get props => [
+    movieId,
+    updatedItem,
+    notificationTitle ?? '',
+    notificationBody ?? '',
+  ];
 }

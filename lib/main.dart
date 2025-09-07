@@ -126,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: (index) {
           context.read<NavigationCubit>().getNavBarItem(NavbarItem.values[index]);
         },
-        items: navItems,
+        items: getNavItems(context),
       ),
     );
   }

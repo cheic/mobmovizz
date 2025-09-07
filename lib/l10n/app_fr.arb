@@ -1,8 +1,10 @@
 {
   "@@locale": "fr",
   "app_title": "MobMovizz",
-  "welcome_message": "Bienvenue sur MobMovizz !",
-  "search": "Rechercher",
+  "welcome_message": "Bienvenue dans MobMovizz !",
+  "home": "Accueil",
+  "genre": "Genre",
+  "search": "Recherche",
   "favorites": "Favoris",
   "settings": "Paramètres",
   "add_to_watchlist": "Ajouter à la watchlist",
@@ -97,6 +99,16 @@
   "top_rated": "Les Mieux Notés",
   "upcoming": "À Venir",
   
+  "notification_title": "🎬 Rappel MobMovizz",
+  "notification_body": "N'oubliez pas le film \"{movieTitle}\" !",
+  "@notification_body": {
+    "placeholders": {
+      "movieTitle": {
+        "type": "String"
+      }
+    }
+  },
+  
   "vote_count_label": "Nombre de votes",
   "release_label": "Sortie",
   "added_label": "Ajouté",
@@ -122,5 +134,7 @@
   
   "filters_and_sort": "Filtres et Tri",
   "filter_by_year": "Filtrer par année",
-  "all_years": "Toutes les années"
+  "all_years": "Toutes les années",
+  "no_internet_connection": "Pas de connexion internet",
+  "check_your_connection": "Vérifiez votre connexion et réessayez"
 }

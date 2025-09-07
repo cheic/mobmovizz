@@ -151,9 +151,6 @@ class _MoviesGridViewPageState extends State<MoviesGridViewPage> {
                 sortOptions: _getSortOptions(context),
                 initialSort: _filterController.selectedSort,
                 initialYear: _filterController.selectedYear,
-                title: AppLocalizations.of(context)?.filters_and_sort ?? 'Filtres et Tri',
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                accentColor: Colors.blue,
                 onApply: (String sortBy, int? year) {
                   setState(() {
                     _filterController.setFilter(sort: sortBy, year: year);

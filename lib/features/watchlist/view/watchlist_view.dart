@@ -469,6 +469,8 @@ class _WatchlistViewState extends State<WatchlistView> {
                   UpdateWatchlistItemEvent(
                     movieId: item.id,
                     updatedItem: updatedItem,
+                    notificationTitle: l10n.notification_title,
+                    notificationBody: l10n.notification_body(item.title),
                   ),
                 );
                 Navigator.of(dialogContext).pop();

@@ -2,6 +2,8 @@
   "@@locale": "en",
   "app_title": "MobMovizz",
   "welcome_message": "Welcome to MobMovizz!",
+  "home": "Home",
+  "genre": "Genre",
   "search": "Search",
   "favorites": "Favorites",
   "settings": "Settings",
@@ -97,6 +99,16 @@
   "top_rated": "Top Rated",
   "upcoming": "Upcoming",
   
+  "notification_title": "🎬 MobMovizz Reminder",
+  "notification_body": "Don't forget about the movie \"{movieTitle}\"!",
+  "@notification_body": {
+    "placeholders": {
+      "movieTitle": {
+        "type": "String"
+      }
+    }
+  },
+  
   "vote_count_label": "Vote count",
   "release_label": "Release",
   "added_label": "Added",
@@ -121,5 +133,7 @@
   
   "filters_and_sort": "Filters and Sort",
   "filter_by_year": "Filter by year",
-  "all_years": "All years"
+  "all_years": "All years",
+  "no_internet_connection": "No internet connection",
+  "check_your_connection": "Check your connection and try again"
 }

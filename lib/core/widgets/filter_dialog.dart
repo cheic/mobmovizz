@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobmovizz/core/theme/theme_bloc.dart';
 import 'package:mobmovizz/l10n/app_localizations.dart';
 
 class FilterDialog extends StatefulWidget {
@@ -18,7 +20,7 @@ class FilterDialog extends StatefulWidget {
     required this.initialYear,
     required this.onApply,
     this.onReset,
-    this.title = 'Filters and Sort',
+    this.title = '',  // Titre vide par défaut, sera traduit automatiquement
     this.backgroundColor,
     this.accentColor,
   });
@@ -34,7 +36,7 @@ class FilterDialog extends StatefulWidget {
     required int? initialYear,
     required Function(String sortBy, int? year) onApply,
     VoidCallback? onReset,
-    String title = 'Filters and Sort',
+    String title = '',  // Titre vide par défaut, sera traduit automatiquement
     Color? backgroundColor,
     Color? accentColor,
   }) {
@@ -42,18 +44,32 @@ class FilterDialog extends StatefulWidget {
       context: context,
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withOpacity(0.5),
+      barrierColor: Colors.black.withOpacity(0.5), // Valeur par défaut, sera adaptée dynamiquement
       transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (context, animation, secondaryAnimation) {
-        return FilterDialog(
-          sortOptions: sortOptions,
-          initialSort: initialSort,
-          initialYear: initialYear,
-          onApply: onApply,
-          onReset: onReset,
-          title: title,
-          backgroundColor: backgroundColor,
-          accentColor: accentColor,
+        // Envelopper le dialog dans un BlocBuilder pour réagir aux changements de thème
+        return BlocBuilder<ThemeBloc, ThemeState>(
+          builder: (context, themeState) {
+            // Adapter la couleur de la barrière selon le thème actuel
+            final isLightMode = themeState.themeMode == 1 || 
+                (themeState.themeMode == 0 && MediaQuery.of(context).platformBrightness == Brightness.light);
+            
+            return Container(
+              color: isLightMode 
+                  ? Colors.black.withOpacity(0.3)  // Plus clair en mode clair
+                  : Colors.black.withOpacity(0.6), // Plus sombre en mode sombre
+              child: FilterDialog(
+                sortOptions: sortOptions,
+                initialSort: initialSort,
+                initialYear: initialYear,
+                onApply: onApply,
+                onReset: onReset,
+                title: title,
+                backgroundColor: backgroundColor,
+                accentColor: accentColor,
+              ),
+            );
+          },
         );
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -87,17 +103,35 @@ class _FilterDialogState extends State<FilterDialog> {
     _selectedYear = widget.initialYear;
   }
 
-  Color get backgroundColor => widget.backgroundColor ?? Theme.of(context).colorScheme.surface;
-  Color get secondaryColor => Theme.of(context).colorScheme.surfaceContainer;
-  Color get accentColor => widget.accentColor ?? Theme.of(context).colorScheme.primary;
+  Color getBackgroundColor(ThemeState themeState, BuildContext context) {
+    // Toujours utiliser la logique adaptative, ignorer widget.backgroundColor
+    final isLightMode = themeState.themeMode == 1 || 
+        (themeState.themeMode == 0 && MediaQuery.of(context).platformBrightness == Brightness.light);
+    
+    return isLightMode ? Colors.white : Theme.of(context).colorScheme.surface;
+  }
+  
+  Color getSecondaryColor(ThemeState themeState, BuildContext context) {
+    // Toujours utiliser la logique adaptative
+    final isLightMode = themeState.themeMode == 1 || 
+        (themeState.themeMode == 0 && MediaQuery.of(context).platformBrightness == Brightness.light);
+    
+    return isLightMode 
+        ? Colors.grey.shade50 
+        : Theme.of(context).colorScheme.surfaceContainer;
+  }
+  
+  Color get accentColor => Theme.of(context).colorScheme.primary; // Utiliser toujours la couleur du thème
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, themeState) {
+        return Align(
+          alignment: Alignment.topCenter,
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
           width: double.infinity,
           height: MediaQuery.of(context).size.height * 0.85, // 85% de la hauteur
           margin: EdgeInsets.only(
@@ -106,7 +140,7 @@ class _FilterDialogState extends State<FilterDialog> {
             right: 16,
           ),
           decoration: BoxDecoration(
-            color: backgroundColor,
+            color: getBackgroundColor(themeState, context),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(0),
               topRight: Radius.circular(0),
@@ -144,15 +178,15 @@ class _FilterDialogState extends State<FilterDialog> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildHeader(),
+                      _buildHeader(themeState, context),
                       const SizedBox(height: 24),
-                      _buildSortSection(),
+                      _buildSortSection(themeState, context),
                       const SizedBox(height: 20),
-                      _buildYearSection(),
+                      _buildYearSection(themeState, context),
                       const SizedBox(height: 12),
-                      _buildYearList(),
+                      _buildYearList(themeState, context),
                       const SizedBox(height: 24),
-                      _buildActionButtons(),
+                      _buildActionButtons(themeState, context),
                       const SizedBox(height: 16), // Padding bottom pour les boutons
                     ],
                   ),
@@ -163,9 +197,11 @@ class _FilterDialogState extends State<FilterDialog> {
         ),
       ),
     );
+        }
+      );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(ThemeState themeState, BuildContext context) {
     return Row(
       children: [
         Container(
@@ -182,7 +218,7 @@ class _FilterDialogState extends State<FilterDialog> {
         ),
         const SizedBox(width: 12),
         Text(
-          AppLocalizations.of(context)?.filters_and_sort ?? widget.title,
+          AppLocalizations.of(context)?.filters_and_sort ?? 'Filtres et Tri',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -204,11 +240,11 @@ class _FilterDialogState extends State<FilterDialog> {
     );
   }
 
-  Widget _buildSortSection() {
+  Widget _buildSortSection(ThemeState themeState, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: secondaryColor,
+        color: getSecondaryColor(themeState, context),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
@@ -240,7 +276,7 @@ class _FilterDialogState extends State<FilterDialog> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: backgroundColor,
+              color: getBackgroundColor(themeState, context),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
@@ -251,7 +287,7 @@ class _FilterDialogState extends State<FilterDialog> {
               value: _selectedSort,
               isExpanded: true,
               underline: const SizedBox(),
-              dropdownColor: secondaryColor,
+              dropdownColor: getSecondaryColor(themeState, context),
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               items: widget.sortOptions.entries.map((entry) {
                 return DropdownMenuItem<String>(
@@ -277,11 +313,11 @@ class _FilterDialogState extends State<FilterDialog> {
     );
   }
 
-  Widget _buildYearSection() {
+  Widget _buildYearSection(ThemeState themeState, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: secondaryColor,
+        color: getSecondaryColor(themeState, context),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
@@ -310,20 +346,20 @@ class _FilterDialogState extends State<FilterDialog> {
             ],
           ),
           const SizedBox(height: 12),
-          _buildAllYearsOption(),
+          _buildAllYearsOption(themeState, context),
           const SizedBox(height: 8),
         ],
       ),
     );
   }
 
-  Widget _buildAllYearsOption() {
+  Widget _buildAllYearsOption(ThemeState themeState, BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: _selectedYear == null 
             ? accentColor.withOpacity(0.2)
-            : backgroundColor,
+            : getBackgroundColor(themeState, context),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: _selectedYear == null 
@@ -387,11 +423,11 @@ class _FilterDialogState extends State<FilterDialog> {
     );
   }
 
-  Widget _buildYearList() {
+  Widget _buildYearList(ThemeState themeState, BuildContext context) {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
-          color: secondaryColor,
+          color: getSecondaryColor(themeState, context),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
@@ -483,7 +519,7 @@ class _FilterDialogState extends State<FilterDialog> {
     );
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(ThemeState themeState, BuildContext context) {
     return Row(
       children: [
         if (widget.onReset != null) ...[

@@ -98,9 +98,6 @@ class _SearchMovieView extends State<SearchMovieView> {
                 sortOptions: _getSortOptions(context),
                 initialSort: _filterController.selectedSort,
                 initialYear: _filterController.selectedYear,
-                title: AppLocalizations.of(context)?.filters_and_sort ?? 'Filters and Sort',
-                backgroundColor: const Color(0xFF111318),
-                accentColor: Colors.blue,
                 onApply: (String sortBy, int? year) {
                   setState(() {
                     _filterController.setFilter(sort: sortBy, year: year);

@@ -176,6 +176,8 @@ class _AddToWatchlistDialogState extends State<AddToWatchlistDialog> {
                 releaseDate: widget.releaseDate,
                 reminderDate: selectedDate,
                 notifyAgain: notifyAgain,
+                notificationTitle: l10n.notification_title,
+                notificationBody: l10n.notification_body(widget.title),
               ),
             );
             Navigator.pop(context);

@@ -12,10 +12,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get app_title => 'MobMovizz';
 
   @override
-  String get welcome_message => 'Bienvenue sur MobMovizz !';
+  String get welcome_message => 'Bienvenue dans MobMovizz !';
 
   @override
-  String get search => 'Rechercher';
+  String get home => 'Accueil';
+
+  @override
+  String get genre => 'Genre';
+
+  @override
+  String get search => 'Recherche';
 
   @override
   String get favorites => 'Favoris';
@@ -281,6 +287,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get upcoming => 'À Venir';
 
   @override
+  String get notification_title => '🎬 Rappel MobMovizz';
+
+  @override
+  String notification_body(String movieTitle) {
+    return 'N\'oubliez pas le film \"$movieTitle\" !';
+  }
+
+  @override
   String get vote_count_label => 'Nombre de votes';
 
   @override
@@ -359,4 +373,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get all_years => 'Toutes les années';
+
+  @override
+  String get no_internet_connection => 'Pas de connexion internet';
+
+  @override
+  String get check_your_connection => 'Vérifiez votre connexion et réessayez';
 }

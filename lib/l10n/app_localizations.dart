@@ -110,6 +110,18 @@ abstract class AppLocalizations {
   /// **'Welcome to MobMovizz!'**
   String get welcome_message;
 
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @genre.
+  ///
+  /// In en, this message translates to:
+  /// **'Genre'**
+  String get genre;
+
   /// No description provided for @search.
   ///
   /// In en, this message translates to:
@@ -632,6 +644,18 @@ abstract class AppLocalizations {
   /// **'Upcoming'**
   String get upcoming;
 
+  /// No description provided for @notification_title.
+  ///
+  /// In en, this message translates to:
+  /// **'🎬 MobMovizz Reminder'**
+  String get notification_title;
+
+  /// No description provided for @notification_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t forget about the movie \"{movieTitle}\"!'**
+  String notification_body(String movieTitle);
+
   /// No description provided for @vote_count_label.
   ///
   /// In en, this message translates to:
@@ -769,6 +793,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All years'**
   String get all_years;
+
+  /// No description provided for @no_internet_connection.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection'**
+  String get no_internet_connection;
+
+  /// No description provided for @check_your_connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection and try again'**
+  String get check_your_connection;
 }
 
 class _AppLocalizationsDelegate

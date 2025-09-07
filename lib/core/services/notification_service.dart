@@ -187,6 +187,8 @@ class NotificationService {
     required int movieId,
     required String movieTitle,
     required DateTime reminderDateTime,
+    String? notificationTitle,
+    String? notificationBody,
   }) async {
     
     if (!_isInitialized) {
@@ -224,11 +226,15 @@ class NotificationService {
       iOS: iosDetails,
     );
 
+    // Use provided messages or fallback to defaults
+    final title = notificationTitle ?? '🎬 Rappel MobMovizz';
+    final body = notificationBody ?? 'N\'oubliez pas le film "$movieTitle" !';
+
     try {
       await _notifications.zonedSchedule(
         movieId,
-        '🎬 Rappel MobMovizz',
-        'Le film "$movieTitle" est sur le point de commencer !',
+        title,
+        body,
         tz.TZDateTime.from(reminderDateTime, tz.local),
         details,
         payload: 'movie_$movieId',

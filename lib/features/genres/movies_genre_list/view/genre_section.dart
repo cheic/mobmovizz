@@ -21,7 +21,7 @@ class GenreSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), // Réduit le padding horizontal et vertical
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6), // Réduit le padding horizontal et vertical
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -102,9 +102,11 @@ class GenreSection extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          width: 120,
+                          width: 140,
                           height: 200,
-                          margin: const EdgeInsets.symmetric(horizontal: 6), // Réduit la marge horizontale
+                          margin: index == 0 
+                              ? const EdgeInsets.only(left: 16, right: 8) // Premier élément : 16 à gauche, 8 à droite
+                              : const EdgeInsets.symmetric(horizontal: 8), // Autres éléments : 8 de chaque côté
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: CachedNetworkImage(

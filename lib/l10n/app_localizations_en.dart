@@ -15,6 +15,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome_message => 'Welcome to MobMovizz!';
 
   @override
+  String get home => 'Home';
+
+  @override
+  String get genre => 'Genre';
+
+  @override
   String get search => 'Search';
 
   @override
@@ -279,6 +285,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upcoming => 'Upcoming';
 
   @override
+  String get notification_title => '🎬 MobMovizz Reminder';
+
+  @override
+  String notification_body(String movieTitle) {
+    return 'Don\'t forget about the movie \"$movieTitle\"!';
+  }
+
+  @override
   String get vote_count_label => 'Vote count';
 
   @override
@@ -356,4 +370,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get all_years => 'All years';
+
+  @override
+  String get no_internet_connection => 'No internet connection';
+
+  @override
+  String get check_your_connection => 'Check your connection and try again';
 }

@@ -53,6 +53,8 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
           movieId: newItem.id.hashCode,
           movieTitle: newItem.title,
           reminderDateTime: event.reminderDate!,
+          notificationTitle: event.notificationTitle,
+          notificationBody: event.notificationBody,
         );
       }
 
@@ -82,6 +84,18 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       if (index != -1) {
         currentWatchlist[index] = event.updatedItem;
         await _appPreferences.saveWatchlist(currentWatchlist);
+        
+        // Reschedule notification with new date/time if reminder date is set
+        if (event.updatedItem.reminderDate != null) {
+          await NotificationService.scheduleMovieReminder(
+            movieId: event.updatedItem.id.hashCode,
+            movieTitle: event.updatedItem.title,
+            reminderDateTime: event.updatedItem.reminderDate!,
+            notificationTitle: event.notificationTitle,
+            notificationBody: event.notificationBody,
+          );
+        }
+        
         emit(WatchlistLoaded(currentWatchlist));
       } else {
         emit(WatchlistError('Movie not found in watchlist'));
