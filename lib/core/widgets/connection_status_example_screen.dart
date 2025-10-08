@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobmovizz/core/widgets/connection_status_app_bar.dart';
+
 import 'package:mobmovizz/core/widgets/no_internet_connection_widget.dart';
 import 'package:mobmovizz/core/widgets/state_widgets.dart';
 import 'package:mobmovizz/l10n/app_localizations.dart';

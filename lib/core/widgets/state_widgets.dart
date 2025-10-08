@@ -186,7 +186,7 @@ class LoadingStateWidget extends StatelessWidget {
 }
 
 /// Widget for no internet connection state with animation
-class NoInternetWidget extends StatefulWidget {
+class NoInternetWidget extends StatelessWidget {
   final VoidCallback? onRetry;
 
   const NoInternetWidget({
@@ -195,110 +195,31 @@ class NoInternetWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<NoInternetWidget> createState() => _NoInternetWidgetState();
-}
-
-class _NoInternetWidgetState extends State<NoInternetWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _pulseAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-    _pulseAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-    _animationController.repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-    
+
     return Center(
       child: Padding(
-        padding: AppPadding.allXl,
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icône animée
-            AnimatedBuilder(
-              animation: _pulseAnimation,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _pulseAnimation.value,
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.error.withOpacity(0.3),
-                        width: 2,
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.wifi_off_rounded,
-                      size: AppDimensions.iconSizeXLarge,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
-                );
-              },
+            Icon(
+              Icons.wifi_off,
+              size: 64,
+              color: Colors.grey,
             ),
-            
-            AppSpacing.verticalLg,
-            
-            // Titre traduit
+            const SizedBox(height: 16),
             Text(
               localizations?.no_internet_connection ?? 'Pas de connexion internet',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),
-            
-            AppSpacing.verticalSm,
-            
-            // Sous-titre traduit
-            Text(
-              localizations?.check_your_connection ?? 'Vérifiez votre connexion et réessayez',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            
-            if (widget.onRetry != null) ...[
-              AppSpacing.verticalXl,
-              ElevatedButton.icon(
-                onPressed: widget.onRetry,
-                icon: const Icon(Icons.refresh_rounded),
-                label: Text(localizations?.retry ?? 'Réessayer'),
-                style: ElevatedButton.styleFrom(
-                  padding: AppPadding.buttonDefault,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+            if (onRetry != null) ...[
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: onRetry,
+                child: Text(localizations?.retry ?? 'Réessayer'),
               ),
             ],
           ],

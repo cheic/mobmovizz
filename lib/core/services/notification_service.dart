@@ -239,7 +239,6 @@ class NotificationService {
         details,
         payload: 'movie_$movieId',
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       );
     } catch (e) {
       throw e;

@@ -9,7 +9,7 @@ class AppThemes {
       primary: royalBlue,
       secondary: royalBlueDerived,
       tertiary: Color(0xFF06B6D4),
-      surface: Color(0xFFE5E7EB), // Arrière-plan principal avec contraste maximum
+      surface: Color(0xFFE8ECF0), // Arrière-plan plus sombre pour moins d'éblouissement
       surfaceContainer: Color(0xFFFFFFFF), // Blanc pur pour les containers
       surfaceContainerHighest: Color(0xFFF1F3F4), // Gris très clair pour la hiérarchie
       onPrimary: snow,
@@ -22,9 +22,9 @@ class AppThemes {
       inverseSurface: surfaceDim,
       onInverseSurface: snow,
     ),
-    scaffoldBackgroundColor: Color(0xFFE5E7EB), // Background encore plus foncé pour maximum contraste
+    scaffoldBackgroundColor: Color(0xFFE8ECF0), // Background plus sombre pour moins d'éblouissement
     appBarTheme: AppBarTheme(
-      backgroundColor: Color(0xFFE5E7EB), // Même couleur que le scaffold
+      backgroundColor: Color(0xFFE8ECF0), // Même couleur que le scaffold pour cohérence
       foregroundColor: Color(0xFF1F2937), // Correspond au colorScheme.onSurface
       elevation: 0,
       centerTitle: true,
@@ -33,14 +33,14 @@ class AppThemes {
       actionsIconTheme: IconThemeData(color: Color(0xFF1F2937)),
     ),
     cardTheme: CardThemeData(
-      color: Color(0xFFFFFFFF), // Blanc pur pour un meilleur contraste
-      elevation: 4, // Augmentation de l'élévation pour plus de profondeur
-      shadowColor: Color(0x15000000), // Ombre plus visible
+      color: Color(0xFFFEFEFE), // Blanc légèrement teinté pour plus de contraste
+      elevation: 6, // Augmentation de l'élévation pour plus de profondeur
+      shadowColor: Color(0x20000000), // Ombre plus visible
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: Color(0xFFE2E8F0), // Bordure subtile pour définir les contours
-          width: 0.5,
+          width: 1.0, // Bordure légèrement plus épaisse
         ),
       ),
     ),
