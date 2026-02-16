@@ -48,7 +48,6 @@ app.*.map.json
 /android/app/release
 
 # Sensitive files
-lib/core/utils/constants.dart
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
 android/key.properties

@@ -84,7 +84,7 @@ class ApiService {
     };
 
     // Construire les options de requête en incluant le bearer token si nécessaire
-    if (includeBearerToken && token.isNotEmpty) {
+    if (includeBearerToken && (token?.isNotEmpty ?? false)) {
       headers[authorization] = 'Bearer $token';
     }
     return Options(headers: headers);
