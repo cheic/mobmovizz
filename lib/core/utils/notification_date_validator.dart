@@ -79,28 +79,15 @@ class NotificationDateValidator {
         );
       }
       
-      // If the movie is already released or releases today, suggest tomorrow or later today
-      DateTime initialDate = DateTime(
-        today.year,
-        today.month,
-        today.day,
+      // If the movie is already released or releases today, suggest tomorrow
+      final tomorrow = now.add(Duration(days: 1));
+      return DateTime(
+        tomorrow.year,
+        tomorrow.month,
+        tomorrow.day,
         time.hour,
         time.minute,
       );
-      
-      // If the suggested time today is in the past, move to tomorrow
-      if (initialDate.isBefore(now)) {
-        final tomorrow = now.add(Duration(days: 1));
-        initialDate = DateTime(
-          tomorrow.year,
-          tomorrow.month,
-          tomorrow.day,
-          time.hour,
-          time.minute,
-        );
-      }
-      
-      return initialDate;
       
     } catch (e) {
       // If we can't parse the release date, suggest tomorrow

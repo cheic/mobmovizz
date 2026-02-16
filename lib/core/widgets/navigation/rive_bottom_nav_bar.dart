@@ -49,9 +49,9 @@ class _RiveBottomNavBarState extends State<RiveBottomNavBar> {
         setState(() {});
       }
     } catch (e) {
-      // If Rive files are not available (e.g., in tests), fallback to regular icons
-      // The build method already handles this by checking if riveArtboards.isNotEmpty
-      debugPrint('Failed to load Rive animation files: $e');
+      // If Rive files are not available, fallback to regular Material Icons
+      // This is expected behavior when Rive animation files are not included
+      // No action needed - the build method handles this gracefully
     }
   }
 
