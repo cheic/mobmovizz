@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -22,12 +21,7 @@ class UpcomingsBloc extends Bloc<UpcomingsEvent, UpcomingsState> {
     void _onFetchUpcomings(UpcomingsEvent discoverEvent, Emitter<UpcomingsState> emit) async {
       emit(UpcomingsLoading());
       
-      BuildContext? context;
-      if (discoverEvent is FetchUpcomings) {
-        context = discoverEvent.context;
-      }
-      
-      final Either<Failure, UpcomingModel> failureOrMovies = await upcomingService.getUpcomings(context: context);
+      final Either<Failure, UpcomingModel> failureOrMovies = await upcomingService.getUpcomings();
       await failureOrMovies.fold(
         (failure) async {
           emit(UpcomingsError(failure.message ?? ""));
@@ -40,7 +34,7 @@ class UpcomingsBloc extends Bloc<UpcomingsEvent, UpcomingsState> {
           await prefs.setString('upcoming_movies', jsonString);
           // Appel natif pour rafraîchir le widget Android
           try {
-            final channel = MethodChannel('mobmovizz/widget');
+            const channel = MethodChannel('mobmovizz/widget');
             await channel.invokeMethod('updateUpcomingWidget');
           } catch (e) {
             // Widget update error handled silently

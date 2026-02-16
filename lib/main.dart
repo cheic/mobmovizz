@@ -59,9 +59,6 @@ void main() async {
           create: (context) =>
               TopRatedBloc(GetIt.I<TopRatedService>())..add(FetchTopRated()),
         ),
-        BlocProvider<NavigationCubit>(
-          create: (BuildContext context) => NavigationCubit(),
-        ),
         BlocProvider(
           create: (context) => MovieGenresBloc(GetIt.I<MovieGenreListService>())
             ..add(FetchGenres()),

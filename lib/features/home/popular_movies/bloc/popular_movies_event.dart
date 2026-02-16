@@ -8,10 +8,5 @@ abstract class PopularMoviesEvent extends Equatable {
 }
 
 class FetchPopularMovies extends PopularMoviesEvent {
-  final BuildContext? context;
-  
-  const FetchPopularMovies({this.context});
-  
-  @override
-  List<Object?> get props => [context];
+  const FetchPopularMovies();
 }
