@@ -31,20 +31,27 @@ class _RiveBottomNavBarState extends State<RiveBottomNavBar> {
   }
 
   void loadRiveFiles() async {
-    for (var item in widget.items) {
-      final bytes = await rootBundle.load('assets/rive/${item.title.toLowerCase()}_icon.riv');
-      final file = RiveFile.import(bytes);
-      final artboard = file.mainArtboard;
-      
-      StateMachineController? controller = StateMachineController.fromArtboard(artboard, item.rive.stateMachineName);
-      if (controller != null) {
-        artboard.addController(controller);
-        SMIInput<bool>? input = controller.findInput<bool>('active');
-        inputs.add(input);
-        riveArtboards.add(artboard);
+    try {
+      for (var item in widget.items) {
+        final bytes = await rootBundle.load('assets/rive/${item.title.toLowerCase()}_icon.riv');
+        final file = RiveFile.import(bytes);
+        final artboard = file.mainArtboard;
+        
+        StateMachineController? controller = StateMachineController.fromArtboard(artboard, item.rive.stateMachineName);
+        if (controller != null) {
+          artboard.addController(controller);
+          SMIInput<bool>? input = controller.findInput<bool>('active');
+          inputs.add(input);
+          riveArtboards.add(artboard);
+        }
       }
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      // If Rive files are not available (e.g., in tests), fallback to regular icons
+      // The build method already handles this by checking if riveArtboards.isNotEmpty
     }
-    setState(() {});
   }
 
   void updateActiveInput(int index) {
