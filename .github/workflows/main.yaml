@@ -23,6 +23,19 @@ jobs:
           flutter-version: '3.x'
       - name: Get dependencies
         run: flutter pub get
+      - name: Configure API constants
+        if: ${{ env.TMDB_TOKEN != '' }}
+        env:
+          TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
+        run: |
+          cat > lib/core/utils/constants.dart << EOF
+          class Constants {
+            static const String apiUrl = 'https://api.themoviedb.org/3/';
+            static const String token = '${TMDB_TOKEN}';
+            static const String imageUrl = 'https://image.tmdb.org/t/p/w500';
+            static const String mobmovizz = 'MobMovizz';
+          }
+          EOF
       - name: Run tests
         run: flutter test
 
