@@ -70,7 +70,7 @@ class _RiveBottomNavBarState extends State<RiveBottomNavBar> {
       },
       items: List.generate(widget.items.length, (index) {
         return BottomNavigationBarItem(
-          icon: riveArtboards.isNotEmpty
+          icon: riveArtboards.isNotEmpty && index < riveArtboards.length
               ? SizedBox(
                   width: 24,
                   height: 24,
