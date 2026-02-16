@@ -38,8 +38,15 @@ class AppPreferences {
     final jsonString = sharedPreferences.getString(_watchlistKey);
     if (jsonString == null) return [];
     
-    final jsonList = jsonDecode(jsonString) as List;
-    return jsonList.map((json) => WatchlistItem.fromJson(json)).toList();
+    try {
+      final jsonList = jsonDecode(jsonString) as List;
+      return jsonList
+          .whereType<Map<String, dynamic>>()
+          .map((json) => WatchlistItem.fromJson(json))
+          .toList();
+    } catch (e) {
+      return [];
+    }
   }
 }
 
@@ -72,13 +79,23 @@ class WatchlistItem {
     'addedDate': addedDate.toIso8601String(),
   };
 
-  factory WatchlistItem.fromJson(Map<String, dynamic> json) => WatchlistItem(
-    id: json['id'],
-    title: json['title'],
-    posterPath: json['posterPath'],
-    releaseDate: json['releaseDate'],
-    reminderDate: json['reminderDate'] != null ? DateTime.parse(json['reminderDate']) : null,
-    notifyAgain: json['notifyAgain'] ?? true,
-    addedDate: DateTime.parse(json['addedDate']),
-  );
+  factory WatchlistItem.fromJson(Map<String, dynamic> json) {
+    final id = json['id'];
+    final title = json['title'];
+    final addedDate = json['addedDate'];
+
+    return WatchlistItem(
+      id: id is int ? id : (id is String ? int.tryParse(id) ?? 0 : 0),
+      title: title is String ? title : 'Unknown',
+      posterPath: json['posterPath'] as String?,
+      releaseDate: json['releaseDate'] as String?,
+      reminderDate: json['reminderDate'] != null
+          ? DateTime.tryParse(json['reminderDate'].toString())
+          : null,
+      notifyAgain: json['notifyAgain'] as bool? ?? true,
+      addedDate: addedDate != null
+          ? (DateTime.tryParse(addedDate.toString()) ?? DateTime.now())
+          : DateTime.now(),
+    );
+  }
 }

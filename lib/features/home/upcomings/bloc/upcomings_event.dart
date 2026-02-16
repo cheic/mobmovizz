@@ -8,10 +8,5 @@ abstract class UpcomingsEvent extends Equatable {
 }
 
 class FetchUpcomings extends UpcomingsEvent {
-  final BuildContext? context;
-  
-  const FetchUpcomings({this.context});
-  
-  @override
-  List<Object?> get props => [context];
+  const FetchUpcomings();
 }
