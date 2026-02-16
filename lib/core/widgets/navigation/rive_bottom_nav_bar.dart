@@ -31,23 +31,35 @@ class _RiveBottomNavBarState extends State<RiveBottomNavBar> {
   }
 
   void loadRiveFiles() async {
-    for (var item in widget.items) {
-      final bytes = await rootBundle.load('assets/rive/${item.title.toLowerCase()}_icon.riv');
-      final file = RiveFile.import(bytes);
-      final artboard = file.mainArtboard;
-      
-      StateMachineController? controller = StateMachineController.fromArtboard(artboard, item.rive.stateMachineName);
-      if (controller != null) {
-        artboard.addController(controller);
-        SMIInput<bool>? input = controller.findInput<bool>('active');
-        inputs.add(input);
-        riveArtboards.add(artboard);
+    try {
+      for (var item in widget.items) {
+        final bytes = await rootBundle.load('assets/rive/${item.title.toLowerCase()}_icon.riv');
+        final file = RiveFile.import(bytes);
+        final artboard = file.mainArtboard;
+        
+        StateMachineController? controller = StateMachineController.fromArtboard(artboard, item.rive.stateMachineName);
+        if (controller != null) {
+          artboard.addController(controller);
+          SMIInput<bool>? input = controller.findInput<bool>('active');
+          inputs.add(input);
+          riveArtboards.add(artboard);
+        }
       }
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      // If Rive files are not available (e.g., in tests), fallback to regular icons
+      // The build method already handles this by checking if riveArtboards.isNotEmpty
+      debugPrint('Failed to load Rive animation files: $e');
     }
-    setState(() {});
   }
 
   void updateActiveInput(int index) {
+    if (index < 0 || index >= inputs.length) {
+      debugPrint('Invalid index $index for updateActiveInput. inputs.length: ${inputs.length}');
+      return;
+    }
     for (int i = 0; i < inputs.length; i++) {
       inputs[i]?.value = i == index;
     }
@@ -63,7 +75,7 @@ class _RiveBottomNavBarState extends State<RiveBottomNavBar> {
       },
       items: List.generate(widget.items.length, (index) {
         return BottomNavigationBarItem(
-          icon: riveArtboards.isNotEmpty
+          icon: riveArtboards.isNotEmpty && index < riveArtboards.length
               ? SizedBox(
                   width: 24,
                   height: 24,
