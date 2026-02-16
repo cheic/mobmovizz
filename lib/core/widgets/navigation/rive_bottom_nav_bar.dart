@@ -57,6 +57,7 @@ class _RiveBottomNavBarState extends State<RiveBottomNavBar> {
 
   void updateActiveInput(int index) {
     if (index < 0 || index >= inputs.length) {
+      debugPrint('Invalid index $index for updateActiveInput. inputs.length: ${inputs.length}');
       return;
     }
     for (int i = 0; i < inputs.length; i++) {
