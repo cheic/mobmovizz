@@ -7,9 +7,16 @@ import 'package:mobmovizz/features/genres/movies_by_genre/data/models/movie_by_g
 
 class MoviesByGenreService {
   final ApiService _apiService;
-  final Map<String, Map<int, MovieByGenreModel>> _cache = {}; // Clé modifiée pour inclure les filtres
+  final Map<String, Map<int, MovieByGenreModel>> _cache = {};
+  static const int _maxCacheEntries = 50;
 
   MoviesByGenreService(this._apiService);
+
+  void _trimCache() {
+    while (_cache.length > _maxCacheEntries) {
+      _cache.remove(_cache.keys.first);
+    }
+  }
 
   Future<Either<Failure, MovieByGenreModel>> getMoviesByGenre({
     required int genreId,
@@ -43,6 +50,7 @@ class MoviesByGenreService {
       
       // Cache the model
       _cache.putIfAbsent(cacheKey, () => {})[page] = movieModel;
+      _trimCache();
       
       return Right(movieModel);
     } catch (e) {
@@ -85,6 +93,7 @@ class MoviesByGenreService {
       
       // Cache the model
       _cache.putIfAbsent(cacheKey, () => {})[page] = movieModel;
+      _trimCache();
       
       return Right(movieModel);
     } catch (e) {
@@ -130,6 +139,7 @@ class MoviesByGenreService {
       final movieModel = MovieByGenreModel.fromJson(response.data);
       
       _cache.putIfAbsent(cacheKey, () => {})[page] = movieModel;
+      _trimCache();
       
       return Right(movieModel);
     } catch (e) {

@@ -14,6 +14,9 @@ class MovieDetailsService {
 
   Future<Either<Failure, MovieDetailsModel>> getMovieDetails(
       int movieId, {BuildContext? context}) async {
+    if (movieId <= 0) {
+      return const Left(ServerFailure('Invalid movie ID'));
+    }
     try {
       final language = LocalizationService.getBestAvailableLanguage(context);
       
@@ -28,6 +31,9 @@ class MovieDetailsService {
   }
 
   Future<Either<Failure, VideoResultsModel>> getMovieVideo(int movieId, {BuildContext? context}) async {
+    if (movieId <= 0) {
+      return const Left(ServerFailure('Invalid movie ID'));
+    }
     try {
       final language = LocalizationService.getBestAvailableLanguage(context);
       
@@ -42,6 +48,9 @@ class MovieDetailsService {
   }
 
     Future<Either<Failure, MovieProvider>> getProviders(int movieId, {BuildContext? context}) async {
+    if (movieId <= 0) {
+      return const Left(ServerFailure('Invalid movie ID'));
+    }
     try {
       final language = LocalizationService.getBestAvailableLanguage(context);
       
