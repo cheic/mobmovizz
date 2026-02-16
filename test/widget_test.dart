@@ -39,7 +39,7 @@ class MockMovieDetailsService extends Mock implements MovieDetailsService {}
 class MockSearchMovieService extends Mock implements SearchMovieService {}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('MyApp builds without ProviderNotFoundException', (WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});
     final sharedPreferences = await SharedPreferences.getInstance();
     final appPreferences = AppPreferences(sharedPreferences);
