@@ -11,16 +11,21 @@ const String authorization = "Authorization";
 const String defaultLanguage = "language";
 
 class DioFactory {
+  static const Duration _connectTimeout = Duration(seconds: 30);
+  static const Duration _receiveTimeout = Duration(seconds: 30);
+  static const Duration _sendTimeout = Duration(seconds: 30);
+
   Future<Dio> getDio() async {
     Dio dio = Dio(BaseOptions(
       baseUrl: Constants.apiUrl,
-      // receiveTimeout: Constants.apiTimeOut,
-      // sendTimeout: Constants.apiTimeOut,
+      connectTimeout: _connectTimeout,
+      receiveTimeout: _receiveTimeout,
+      sendTimeout: _sendTimeout,
     ));
 
     if (!kReleaseMode) {
       dio.interceptors.add(PrettyDioLogger(
-        requestHeader: true,
+        requestHeader: false,
         requestBody: true,
         responseBody: true,
         responseHeader: false,

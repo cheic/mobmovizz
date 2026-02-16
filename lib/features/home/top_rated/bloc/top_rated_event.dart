@@ -8,10 +8,5 @@ sealed class TopRatedEvent extends Equatable {
 }
 
 class FetchTopRated extends TopRatedEvent{
-  final BuildContext? context;
-  
-  const FetchTopRated({this.context});
-  
-  @override
-  List<Object?> get props => [context];
+  const FetchTopRated();
 }

@@ -63,9 +63,13 @@ class ApiService {
     return response;
   }
  
-  Future<Response> delete(
-      {required String endPoint, bool includeBearerToken = true}) async {
-    var response = await _dio.delete('${Constants.apiUrl}$endPoint');
+  Future<Response> delete({
+    required String endPoint,
+    bool includeBearerToken = true,
+    String contentType = applicationJson,
+  }) async {
+    var response = await _dio.delete('${Constants.apiUrl}$endPoint',
+        options: await _buildOptions(includeBearerToken, contentType));
     return response;
   }
 

@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:mobmovizz/core/error/failure.dart';
 import 'package:mobmovizz/features/home/top_rated/data/top_rated_service.dart';
 import 'package:mobmovizz/features/home/upcomings/data/models/upcoming_model.dart';
@@ -19,13 +18,8 @@ class TopRatedBloc extends Bloc<TopRatedEvent, TopRatedState> {
       TopRatedEvent event, Emitter<TopRatedState> emit) async {
     emit(TopRatedInitial());
 
-    BuildContext? context;
-    if (event is FetchTopRated) {
-      context = event.context;
-    }
-
     final Either<Failure, UpcomingModel> failureOrData =
-        await topRatedService.getTopRated(context: context);
+        await topRatedService.getTopRated();
 
     failureOrData.fold(
         (failure) =>
