@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobmovizz/core/common/info.dart';
 import 'package:mobmovizz/core/theme/colors.dart';
 import 'package:mobmovizz/core/utils/constants.dart';
-import 'package:mobmovizz/core/widgets/connection_status_app_bar.dart';
 import 'package:mobmovizz/core/widgets/circular_progress.dart';
 import 'package:mobmovizz/core/widgets/error_handler_widget.dart';
 import 'package:mobmovizz/core/widgets/section_error_wrapper.dart';
@@ -24,204 +23,268 @@ class DiscoverView extends StatefulWidget {
 }
 
 class _DiscoverViewState extends State<DiscoverView> {
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(
+    viewportFraction: 0.88,
+    initialPage: 0,
+  );
   int currentPageIndex = 0;
-  double currentPage = 0.0;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     context.read<PopularMoviesBloc>().add(FetchPopularMovies());
-    _pageController.addListener(() {
-      setState(() {
-        currentPage = _pageController.page!;
-      });
-    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        
-        appBar: connectionStatusAppBar(
-          context: context, 
-          title: Constants.mobmovizz, 
-          actions: [
+      appBar: AppBar(
+        title: Text(Constants.mobmovizz),
+        actions: [
           IconButton(
-              onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const TMDBDisclaimerPage()),
-                  ),
-              icon: Icon(Icons.info_outline_rounded,)),
-          IconButton(
-              onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingsView()),
-                  ),
-              icon: Icon(Icons.settings_outlined,)),
-        ],),
-        extendBodyBehindAppBar: false,
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 50),
-          child: Column(
-            children: [
-              // Section des films populaires avec gestion d'erreur séparée
-              _buildPopularMoviesSection(),
-              
-              // Les autres widgets restent toujours visibles avec gestion d'erreur
-              _buildSafeWidget(
-                child: const WatchlistHomeWidget(),
-                sectionTitle: AppLocalizations.of(context)?.my_watchlist ?? 'My Watchlist',
-              ),
-              _buildSafeWidget(
-                child: const UpcomingView(),
-                sectionTitle: AppLocalizations.of(context)?.upcoming ?? 'Upcoming',
-              ),
-              _buildSafeWidget(
-                child: const TopRatedView(),
-                sectionTitle: AppLocalizations.of(context)?.top_rated ?? 'Top Rated',
-              ),
-            ],
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const TMDBDisclaimerPage()),
+            ),
+            icon: const Icon(Icons.info_outline_rounded),
+            tooltip: 'TMDB',
           ),
-        ));
-  }
-
-  Widget _buildPopularMoviesSection() {
-    return BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
-      builder: (context, state) {
-        if (state is PopularMoviesLoading) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height * 0.65,
-            child: Center(child: mainCircularProgress()),
-          );
-        } else if (state is PopularMoviesLoaded) {
-          return _buildLoadedPopularMovies(state);
-        } else if (state is PopularMoviesError) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: ErrorHandlerWidget(
-              errorMessage: state.message,
-              onRetry: () {
-                context.read<PopularMoviesBloc>().add(FetchPopularMovies());
-              },
+          IconButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsView()),
             ),
-          );
-        } else {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
-            child: Center(
-              child: Text(
-                AppLocalizations.of(context)?.search_for_movies_text ?? 'Search for movies'
+            icon: const Icon(Icons.settings_outlined),
+            tooltip:
+                AppLocalizations.of(context)?.settings ?? 'Settings',
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
+      body: BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
+        builder: (context, state) {
+          if (state is PopularMoviesError) {
+            return Center(
+              child: ErrorHandlerWidget(
+                errorMessage: state.message,
+                onRetry: () {
+                  context
+                      .read<PopularMoviesBloc>()
+                      .add(FetchPopularMovies());
+                },
               ),
+            );
+          }
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildPopularMoviesSection(state),
+                const SizedBox(height: 8),
+                _buildSafeWidget(
+                  child: const WatchlistHomeWidget(),
+                  sectionTitle:
+                      AppLocalizations.of(context)?.my_watchlist ?? 'My Watchlist',
+                ),
+                _buildSafeWidget(
+                  child: const UpcomingView(),
+                  sectionTitle:
+                      AppLocalizations.of(context)?.upcoming ?? 'Upcoming',
+                ),
+                _buildSafeWidget(
+                  child: const TopRatedView(),
+                  sectionTitle:
+                      AppLocalizations.of(context)?.top_rated ?? 'Top Rated',
+                ),
+              ],
             ),
           );
-        }
-      },
+        },
+      ),
     );
   }
 
-  Widget _buildLoadedPopularMovies(PopularMoviesLoaded state) {
-    List<Widget> buildPageIndicator() {
-      List<Widget> list = [];
-      for (int i = 0; i < state.popularMovieModel.results.length; i++) {
-        list.add(i == currentPageIndex
-            ? _indicator(true)
-            : _indicator(false));
-      }
-      return list;
+  Widget _buildPopularMoviesSection(PopularMoviesState state) {
+    if (state is PopularMoviesLoading) {
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: Center(child: mainCircularProgress()),
+      );
+    } else if (state is PopularMoviesLoaded) {
+      return _buildLoadedPopularMovies(state);
+    } else {
+      return SizedBox(
+        height: 200,
+        child: Center(
+          child: Text(
+            AppLocalizations.of(context)?.search_for_movies_text ??
+                'Search for movies',
+          ),
+        ),
+      );
     }
+  }
+
+  Widget _buildLoadedPopularMovies(PopularMoviesLoaded state) {
+    final movies = state.popularMovieModel.results;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ── Section Title ──
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 14),
+          child: Text(
+            AppLocalizations.of(context)?.popular ?? 'Popular',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+        ),
+
+        // ── Hero Carousel ──
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.65,
+          height: MediaQuery.of(context).size.height * 0.58,
           child: PageView.builder(
             controller: _pageController,
-            itemCount: state.popularMovieModel.results.length,
+            itemCount: movies.length,
+            onPageChanged: (page) =>
+                setState(() => currentPageIndex = page),
             itemBuilder: (context, index) {
-              final movie = state.popularMovieModel.results[index];
+              final movie = movies[index];
               final posterPath = movie.posterPath;
+
               return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => MovieDetailsView(movieId: movie.id),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MovieDetailsView(movieId: movie.id),
+                  ),
+                ),
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // ── Poster Image ──
+                        if (posterPath != null && posterPath.isNotEmpty)
+                          CachedNetworkImage(
+                            imageUrl:
+                                'https://image.tmdb.org/t/p/w500$posterPath',
+                            fit: BoxFit.cover,
+                            progressIndicatorBuilder:
+                                (_, __, progress) => Center(
+                              child: mainCircularProgress(
+                                  value: progress.progress),
+                            ),
+                            errorWidget: (_, __, ___) =>
+                                _posterPlaceholder(context),
+                          )
+                        else
+                          _posterPlaceholder(context),
+
+                        // ── Bottom Gradient + Title ──
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            padding:
+                                const EdgeInsets.fromLTRB(16, 32, 16, 12),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [
+                                  Colors.black.withValues(alpha: 0.85),
+                                  Colors.black.withValues(alpha: 0.4),
+                                  Colors.transparent,
+                                ],
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (movie.voteAverage > 0) ...[
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.star_rounded,
+                                          color: accentAmber, size: 18),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        movie.voteAverage
+                                            .toStringAsFixed(1),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            ?.copyWith(
+                                              color: Colors.white,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-                child: Stack(
-                  children: [
-                    if (posterPath != null && posterPath.isNotEmpty)
-                      CachedNetworkImage(
-                        progressIndicatorBuilder:
-                            (context, url, progress) => Center(
-                          child: mainCircularProgress(
-                            value: progress.progress,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => ImageErrorWidget(
-                          url: url,
-                          width: double.infinity,
-                        ),
-                        imageUrl:
-                            'https://image.tmdb.org/t/p/w500$posterPath',
-                        width: double.infinity,
-                        fit: BoxFit.fill,
-                      )
-                    else
-                      ImageErrorWidget(
-                        url: '',
-                        width: double.infinity,
-                      ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: <Color>[
-                              surfaceDim.withAlpha(255),
-                              surfaceDim.withAlpha(50),
-                              surfaceDim.withAlpha(0),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+                  ),
                 ),
               );
             },
-            onPageChanged: (int page) {
-              setState(() {
-                currentPageIndex = page;
-              });
-            },
           ),
         ),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: DecoratedBox(
-            decoration: BoxDecoration(color: surfaceDim),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: buildPageIndicator(),
-              ),
-            ),
+
+        // ── Page Indicator ──
+        const SizedBox(height: 16),
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(
+                movies.length, (i) => _indicator(i == currentPageIndex)),
           ),
         ),
       ],
     );
   }
 
-  /// Widget wrapper qui capture les erreurs des widgets enfants
-  /// et affiche un message d'erreur compact sans bloquer les autres sections
+  Widget _posterPlaceholder(BuildContext context) {
+    return Container(
+      color: Theme.of(context).colorScheme.surfaceContainer,
+      child: Center(
+        child: Icon(
+          Icons.movie_outlined,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          size: 60,
+        ),
+      ),
+    );
+  }
+
   Widget _buildSafeWidget({
     required Widget child,
     required String sectionTitle,
@@ -231,7 +294,6 @@ class _DiscoverViewState extends State<DiscoverView> {
         try {
           return child;
         } catch (error) {
-          // Si le widget enfant génère une erreur, afficher un widget d'erreur compact
           return CompactSectionError(
             title: sectionTitle,
             errorMessage: error.toString(),
@@ -243,34 +305,20 @@ class _DiscoverViewState extends State<DiscoverView> {
   }
 
   Widget _indicator(bool isActive) {
-    return SizedBox(
-      height: 10,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        height: isActive ? 6 : 4.0,
-        width: isActive ? 6 : 4.0,
-        decoration: BoxDecoration(
-          boxShadow: [
-            isActive
-                ? BoxShadow(
-                    color: royalBlueDerived,
-                    blurRadius: 4.0,
-                    spreadRadius: 1.0,
-                    offset: const Offset(
-                      0.0,
-                      0.0,
-                    ),
-                  )
-                : const BoxShadow(
-                    color: Colors.transparent,
-                  )
-          ],
-          shape: BoxShape.circle,
-          color: isActive
-              ? royalBlueDerived
-              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-        ),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+      margin: const EdgeInsets.symmetric(horizontal: 3),
+      height: 4,
+      width: isActive ? 24 : 8,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(2),
+        color: isActive
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context)
+                .colorScheme
+                .onSurface
+                .withValues(alpha: 0.2),
       ),
     );
   }

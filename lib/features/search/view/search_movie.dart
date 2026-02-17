@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobmovizz/core/common/filter_grid_list_controller.dart';
-import 'package:mobmovizz/core/theme/colors.dart';
+
 import 'package:mobmovizz/core/utils/constants.dart';
 import 'package:mobmovizz/core/widgets/app_bar.dart';
 import 'package:mobmovizz/core/widgets/circular_progress.dart';
+import 'package:mobmovizz/core/widgets/error_handler_widget.dart';
 import 'package:mobmovizz/core/widgets/filter_dialog.dart';
 import 'package:mobmovizz/core/widgets/filter_header.dart';
 import 'package:mobmovizz/core/widgets/list_movie_item.dart';
@@ -191,18 +192,19 @@ class _SearchMovieView extends State<SearchMovieView> {
                   if (_filterController.isGridView) {
                     return GridView.builder(
                       controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        childAspectRatio: 0.7,
-                        mainAxisSpacing: 8,
-                        crossAxisSpacing: 8,
+                        childAspectRatio: 0.67,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
                       ),
                       itemCount: state.searchMovieModel.results?.length,
                       itemBuilder: (context, index) {
                         final movie = state.searchMovieModel.results![index];
                         return GestureDetector(
                           child: ClipRRect(
-                            borderRadius: const BorderRadius.all(Radius.circular(8)),
+                            borderRadius: const BorderRadius.all(Radius.circular(12)),
                             child: movie.posterPath == null || movie.posterPath!.isEmpty
                                 ? Container(
                                     color: Theme.of(context).colorScheme.surfaceContainer,
@@ -262,35 +264,8 @@ class _SearchMovieView extends State<SearchMovieView> {
                     );
                   }
                 } else if (state is SearchMovieError) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline_rounded,
-                          size: 80,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                        const SizedBox(height: 24),
-                        Text(
-                          'Oups !',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                          child: Text(
-                            state.message,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  return ErrorHandlerWidget(
+                    errorMessage: state.message,
                   );
                 }
                 return Container();
@@ -304,11 +279,7 @@ class _SearchMovieView extends State<SearchMovieView> {
         duration: const Duration(milliseconds: 300),
         child: FloatingActionButton(
           onPressed: _scrollToTop,
-          backgroundColor: royalBlueDerived,
-          child: const Icon(
-            Icons.arrow_upward,
-            color: snow,
-          ),
+          child: const Icon(Icons.arrow_upward),
         ),
       ),
     );

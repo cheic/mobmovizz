@@ -279,6 +279,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Location permissions are denied';
 
   @override
+  String get popular => 'Popular';
+
+  @override
   String get top_rated => 'Top Rated';
 
   @override

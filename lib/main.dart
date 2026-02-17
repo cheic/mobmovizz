@@ -9,8 +9,6 @@ import 'package:mobmovizz/core/utils/app_preferences.dart';
 import 'package:mobmovizz/core/widgets/navigation/bottom_nav_screens.dart';
 import 'package:mobmovizz/core/widgets/navigation/nav_bar_cubit.dart';
 import 'package:mobmovizz/core/widgets/navigation/nav_bar_items.dart';
-import 'package:mobmovizz/core/widgets/navigation/nav_items.dart';
-import 'package:mobmovizz/core/widgets/navigation/rive_bottom_nav_bar.dart';
 import 'package:mobmovizz/features/genres/movies_by_genre/bloc/movies_by_genre_bloc.dart';
 import 'package:mobmovizz/features/genres/movies_by_genre/data/movies_by_genre_service.dart';
 import 'package:mobmovizz/features/genres/movies_genre_list/bloc/movie_genres_bloc.dart';
@@ -113,17 +111,51 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    final currentIndex = context.watch<NavigationCubit>().state.index;
+    final l10n = AppLocalizations.of(context);
+    
     return Scaffold(
       body: IndexedStack(
-        index: context.watch<NavigationCubit>().state.index,
+        index: currentIndex,
         children: bottomNavScreen,
       ),
-      bottomNavigationBar: RiveBottomNavBar(
-        currentIndex: context.watch<NavigationCubit>().state.index,
-        onTap: (index) {
-          context.read<NavigationCubit>().getNavBarItem(NavbarItem.values[index]);
-        },
-        items: getNavItems(context),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Theme.of(context).colorScheme.outlineVariant,
+              width: 0.5,
+            ),
+          ),
+        ),
+        child: NavigationBar(
+          selectedIndex: currentIndex,
+          onDestinationSelected: (index) {
+            context.read<NavigationCubit>().getNavBarItem(NavbarItem.values[index]);
+          },
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.explore_outlined),
+              selectedIcon: const Icon(Icons.explore),
+              label: l10n?.home ?? 'Discover',
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.category_outlined),
+              selectedIcon: const Icon(Icons.category),
+              label: l10n?.genre ?? 'Genres',
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.search_rounded),
+              selectedIcon: const Icon(Icons.search),
+              label: l10n?.search ?? 'Search',
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.bookmark_outline_rounded),
+              selectedIcon: const Icon(Icons.bookmark),
+              label: l10n?.favorites ?? 'Watchlist',
+            ),
+          ],
+        ),
       ),
     );
   }

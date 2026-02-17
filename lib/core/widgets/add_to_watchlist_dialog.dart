@@ -162,7 +162,6 @@ class _AddToWatchlistDialogState extends State<AddToWatchlistDialog> {
                   content: Text(
                     NotificationDateValidator.getValidationErrorMessage(widget.releaseDate),
                   ),
-                  backgroundColor: Colors.red,
                 ),
               );
               return;

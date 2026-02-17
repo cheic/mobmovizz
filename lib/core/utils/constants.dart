@@ -7,7 +7,7 @@ class Constants {
   // Le defaultValue ci-dessous est utilisé uniquement pour le développement
   static const String token = String.fromEnvironment(
     'TMDB_TOKEN',
-    defaultValue: '',
+    defaultValue: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZWU2MGFlMmQ5OTE2YTlkYTE0OTUyNWI4YjRhMGEwMCIsIm5iZiI6MTYyMjAyNzA1NC4yMTUwMDAyLCJzdWIiOiI2MGFlMmIyZTc3NzZmMDAwMjkzNTE2ZmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.dueS4y2ImL8PH4h3jxRkrtAeK9nRAJSSr1NdLFiFlaQ',
   );
 
   // URL de base pour les images TMDB

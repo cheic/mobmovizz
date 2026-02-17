@@ -1,192 +1,278 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mobmovizz/core/theme/colors.dart';
 
 class AppThemes {
+  // ── Typography ────────────────────────────────────────────────
+  static TextTheme _buildTextTheme(Color base, Color muted) {
+    return GoogleFonts.plusJakartaSansTextTheme(TextTheme(
+      headlineLarge: TextStyle(color: base, fontWeight: FontWeight.w800, fontSize: 30, letterSpacing: -0.5),
+      headlineMedium: TextStyle(color: base, fontWeight: FontWeight.w700, fontSize: 26, letterSpacing: -0.3),
+      headlineSmall: TextStyle(color: base, fontWeight: FontWeight.w600, fontSize: 22),
+      titleLarge: TextStyle(color: base, fontWeight: FontWeight.w700, fontSize: 20),
+      titleMedium: TextStyle(color: base, fontWeight: FontWeight.w600, fontSize: 16),
+      titleSmall: TextStyle(color: muted, fontWeight: FontWeight.w500, fontSize: 14),
+      bodyLarge: TextStyle(color: base, fontSize: 16, height: 1.5),
+      bodyMedium: TextStyle(color: muted, fontSize: 14, height: 1.5),
+      bodySmall: TextStyle(color: muted, fontSize: 12, height: 1.4),
+      labelLarge: TextStyle(color: base, fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: 0.5),
+      labelMedium: TextStyle(color: muted, fontWeight: FontWeight.w500, fontSize: 12),
+      labelSmall: TextStyle(color: muted, fontWeight: FontWeight.w500, fontSize: 11, letterSpacing: 0.5),
+    ));
+  }
+
+  // ── Light Theme ───────────────────────────────────────────────
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
     colorScheme: ColorScheme.light(
       primary: royalBlue,
       secondary: royalBlueDerived,
-      tertiary: Color(0xFF06B6D4),
-      surface: Color(0xFFE8ECF0), // Arrière-plan plus sombre pour moins d'éblouissement
-      surfaceContainer: Color(0xFFFFFFFF), // Blanc pur pour les containers
-      surfaceContainerHighest: Color(0xFFF1F3F4), // Gris très clair pour la hiérarchie
-      onPrimary: snow,
-      onSecondary: snow,
-      onSurface: Color(0xFF1F2937), // Texte plus contrasté
-      onSurfaceVariant: Color(0xFF4B5563), // Gris moyen avec plus de contraste
-      outline: Color(0xFFD1D5DB), // Bordures plus visibles
-      error: Color(0xFFEF4444),
-      onError: snow,
+      tertiary: accentAmber,
+      surface: Color(0xFFF6F8FA),
+      surfaceContainer: Colors.white,
+      surfaceContainerHighest: Color(0xFFEEF1F5),
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurface: Color(0xFF1A1D21),
+      onSurfaceVariant: Color(0xFF4A5568),
+      outline: Color(0xFFD0D7DE),
+      outlineVariant: Color(0xFFE8ECF0),
+      error: Color(0xFFDC3545),
+      onError: Colors.white,
       inverseSurface: surfaceDim,
       onInverseSurface: snow,
     ),
-    scaffoldBackgroundColor: Color(0xFFE8ECF0), // Background plus sombre pour moins d'éblouissement
+    scaffoldBackgroundColor: Color(0xFFF6F8FA),
     appBarTheme: AppBarTheme(
-      backgroundColor: Color(0xFFE8ECF0), // Même couleur que le scaffold pour cohérence
-      foregroundColor: Color(0xFF1F2937), // Correspond au colorScheme.onSurface
+      backgroundColor: Colors.white,
+      foregroundColor: Color(0xFF1A1D21),
       elevation: 0,
-      centerTitle: true,
+      scrolledUnderElevation: 1,
+      centerTitle: false,
       surfaceTintColor: Colors.transparent,
-      iconTheme: IconThemeData(color: Color(0xFF1F2937)),
-      actionsIconTheme: IconThemeData(color: Color(0xFF1F2937)),
+      titleTextStyle: GoogleFonts.plusJakartaSans(
+        color: Color(0xFF1A1D21),
+        fontWeight: FontWeight.w700,
+        fontSize: 20,
+      ),
+      iconTheme: IconThemeData(color: Color(0xFF1A1D21)),
     ),
     cardTheme: CardThemeData(
-      color: Color(0xFFFEFEFE), // Blanc légèrement teinté pour plus de contraste
-      elevation: 6, // Augmentation de l'élévation pour plus de profondeur
-      shadowColor: Color(0x20000000), // Ombre plus visible
+      color: Colors.white,
+      elevation: 0,
+      margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: Color(0xFFE2E8F0), // Bordure subtile pour définir les contours
-          width: 1.0, // Bordure légèrement plus épaisse
-        ),
+        side: BorderSide(color: Color(0xFFE8ECF0), width: 1),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: royalBlue,
-        foregroundColor: snow,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 2,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 0,
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 15),
       ),
     ),
-    textTheme: TextTheme(
-      headlineLarge: TextStyle(
-        color: surfaceDim, 
-        fontWeight: FontWeight.bold,
-        fontSize: 32,
-      ),
-      headlineMedium: TextStyle(
-        color: surfaceDim, 
-        fontWeight: FontWeight.w600,
-        fontSize: 28,
-      ),
-      headlineSmall: TextStyle(
-        color: surfaceDim, 
-        fontWeight: FontWeight.w500,
-        fontSize: 24,
-      ),
-      bodyLarge: TextStyle(
-        color: surfaceDim,
-        fontSize: 16,
-      ),
-      bodyMedium: TextStyle(
-        color: surfaceDim,
-        fontSize: 14,
-      ),
-      bodySmall: TextStyle(
-        color: surfaceDim,
-        fontSize: 12,
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: royalBlue,
+        textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
-    dividerTheme: DividerThemeData(
-      color: Color(0xFFE2E8F0),
-      thickness: 1,
+    chipTheme: ChipThemeData(
+      backgroundColor: Color(0xFFE2E6ED),
+      labelStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w500, fontSize: 13, color: Color(0xFF1F2937)),
+      side: BorderSide.none,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     ),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: Color(0xFFFFFFFF), // Blanc pour contraster avec le fond
-      selectedItemColor: royalBlue,
-      unselectedItemColor: Color(0xFF6B7280), // Gris moyen avec plus de contraste
-      elevation: 12, // Plus d'élévation pour la séparer du contenu
-      type: BottomNavigationBarType.fixed,
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Color(0xFFD0D7DE), width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: royalBlue, width: 2),
+      ),
+      hintStyle: GoogleFonts.plusJakartaSans(color: Color(0xFF8B95A5), fontSize: 15),
     ),
-    iconTheme: IconThemeData(color: Color(0xFF1F2937)), // Plus contrasté
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: royalBlue,
+      foregroundColor: Colors.white,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
+    ),
+    dialogTheme: DialogThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      surfaceTintColor: Colors.transparent,
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      indicatorColor: royalBlue.withValues(alpha: 0.12),
+      surfaceTintColor: Colors.transparent,
+      labelTextStyle: WidgetStatePropertyAll(
+        GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 12),
+      ),
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return IconThemeData(color: royalBlue, size: 24);
+        }
+        return IconThemeData(color: Color(0xFF8B95A5), size: 24);
+      }),
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+    ),
+    dividerTheme: DividerThemeData(color: Color(0xFFE8ECF0), thickness: 1),
+    textTheme: _buildTextTheme(Color(0xFF1A1D21), Color(0xFF4A5568)),
+    iconTheme: IconThemeData(color: Color(0xFF1A1D21)),
   );
 
+  // ── Dark Theme ────────────────────────────────────────────────
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: ColorScheme.dark(
-      primary: royalBlue,
+      primary: royalBlueDerived,
       secondary: royalBlueDerived,
-      tertiary: Color(0xFF06B6D4),
+      tertiary: accentAmber,
       surface: surfaceDim,
-      surfaceContainer: Color(0xFF1A1D23),
-      surfaceContainerHighest: Color(0xFF212328),
-      onPrimary: snow,
-      onSecondary: snow,
-      onSurface: snow,
-      onSurfaceVariant: snow,
-      outline: Color(0xFF475569),
-      error: Color(0xFFEF4444),
-      onError: snow,
+      surfaceContainer: surfaceDimLight,
+      surfaceContainerHighest: Color(0xFF21262D),
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurface: Color(0xFFE6EDF3),
+      onSurfaceVariant: Color(0xFF8B949E),
+      outline: Color(0xFF30363D),
+      outlineVariant: Color(0xFF21262D),
+      error: Color(0xFFF85149),
+      onError: Colors.white,
       inverseSurface: snow,
       onInverseSurface: surfaceDim,
     ),
     scaffoldBackgroundColor: surfaceDim,
     appBarTheme: AppBarTheme(
       backgroundColor: surfaceDim,
-      foregroundColor: snow,
+      foregroundColor: Color(0xFFE6EDF3),
       elevation: 0,
-      centerTitle: true,
+      scrolledUnderElevation: 1,
+      centerTitle: false,
       surfaceTintColor: Colors.transparent,
-      iconTheme: IconThemeData(color: snow),
-      actionsIconTheme: IconThemeData(color: snow),
+      titleTextStyle: GoogleFonts.plusJakartaSans(
+        color: Color(0xFFE6EDF3),
+        fontWeight: FontWeight.w700,
+        fontSize: 20,
+      ),
+      iconTheme: IconThemeData(color: Color(0xFFE6EDF3)),
     ),
     cardTheme: CardThemeData(
-      color: Color(0xFF1A1D23),
-      elevation: 8,
-      shadowColor: Color(0x4D0F172A), // Equivalent à surfaceDim avec 30% d'opacité
+      color: surfaceDimLight,
+      elevation: 0,
+      margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Color(0xFF30363D), width: 1),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: royalBlue,
-        foregroundColor: snow,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 4,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        backgroundColor: royalBlueDerived,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 0,
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 15),
       ),
     ),
-    textTheme: TextTheme(
-      headlineLarge: TextStyle(
-        color: snow, 
-        fontWeight: FontWeight.bold,
-        fontSize: 32,
-      ),
-      headlineMedium: TextStyle(
-        color: snow, 
-        fontWeight: FontWeight.w600,
-        fontSize: 28,
-      ),
-      headlineSmall: TextStyle(
-        color: snow, 
-        fontWeight: FontWeight.w500,
-        fontSize: 24,
-      ),
-      bodyLarge: TextStyle(
-        color: snow,
-        fontSize: 16,
-      ),
-      bodyMedium: TextStyle(
-        color: snow,
-        fontSize: 14,
-      ),
-      bodySmall: TextStyle(
-        color: snow,
-        fontSize: 12,
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: royalBlueDerived,
+        textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     ),
-    dividerTheme: DividerThemeData(
-      color: Color(0xFF475569),
-      thickness: 1,
+    chipTheme: ChipThemeData(
+      backgroundColor: Color(0xFF21262D),
+      labelStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w500, fontSize: 13, color: Color(0xFFE6EDF3)),
+      side: BorderSide.none,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     ),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: surfaceDimLight,
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Color(0xFF30363D), width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: royalBlueDerived, width: 2),
+      ),
+      hintStyle: GoogleFonts.plusJakartaSans(color: Color(0xFF8B949E), fontSize: 15),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: royalBlueDerived,
+      foregroundColor: Colors.white,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
+    ),
+    dialogTheme: DialogThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: surfaceDimLight,
+      surfaceTintColor: Colors.transparent,
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: surfaceDimLight,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
       backgroundColor: surfaceDim,
-      selectedItemColor: royalBlue,
-      unselectedItemColor: snow,
-      elevation: 20,
+      elevation: 0,
+      indicatorColor: royalBlueDerived.withValues(alpha: 0.15),
+      surfaceTintColor: Colors.transparent,
+      labelTextStyle: WidgetStatePropertyAll(
+        GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 12),
+      ),
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return IconThemeData(color: royalBlueDerived, size: 24);
+        }
+        return IconThemeData(color: Color(0xFF8B949E), size: 24);
+      }),
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
     ),
-    iconTheme: IconThemeData(color: snow),
+    dividerTheme: DividerThemeData(color: Color(0xFF30363D), thickness: 1),
+    textTheme: _buildTextTheme(Color(0xFFE6EDF3), Color(0xFF8B949E)),
+    iconTheme: IconThemeData(color: Color(0xFFE6EDF3)),
   );
 
   static ThemeMode getThemeMode(int themeModeValue) {

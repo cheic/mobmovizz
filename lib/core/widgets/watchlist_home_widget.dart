@@ -35,17 +35,19 @@ class WatchlistHomeWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      AppLocalizations.of(context)?.coming_up_in_watchlist ?? 'Coming Up in Watchlist',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)?.coming_up_in_watchlist ?? 'Coming Up in Watchlist',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    const SizedBox(width: 8),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -55,17 +57,33 @@ class WatchlistHomeWidget extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Text(AppLocalizations.of(context)?.view_all ?? 'View All'),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(AppLocalizations.of(context)?.view_all ?? 'View All'),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 14,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
               
               SizedBox(
-                height: 200,
+                height: 210,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: upcomingItems.length > 5 ? 5 : upcomingItems.length,
                   itemBuilder: (context, index) {
                     final item = upcomingItems[index];
@@ -87,8 +105,8 @@ class WatchlistHomeWidget extends StatelessWidget {
     final displayDate = DateFormatter.formatShortDate(item.reminderDate, context);
 
     return Container(
-      width: 120,
-      margin: EdgeInsets.only(right: 12),
+      width: 130,
+      margin: const EdgeInsets.only(right: 12),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -104,7 +122,7 @@ class WatchlistHomeWidget extends StatelessWidget {
             // Movie Poster
             Expanded(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
                 child: item.posterPath != null
                     ? CachedNetworkImage(
                         imageUrl: 'https://image.tmdb.org/t/p/w300${item.posterPath}',
