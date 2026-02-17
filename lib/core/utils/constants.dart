@@ -5,10 +5,7 @@ class Constants {
   // Bearer Token TMDB (API Read Access Token)
   // IMPORTANT: En production, passez le token via --dart-define=TMDB_TOKEN=votre_token
   // Le defaultValue ci-dessous est utilisé uniquement pour le développement
-  static const String token = String.fromEnvironment(
-    'TMDB_TOKEN',
-    defaultValue: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZWU2MGFlMmQ5OTE2YTlkYTE0OTUyNWI4YjRhMGEwMCIsIm5iZiI6MTYyMjAyNzA1NC4yMTUwMDAyLCJzdWIiOiI2MGFlMmIyZTc3NzZmMDAwMjkzNTE2ZmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.dueS4y2ImL8PH4h3jxRkrtAeK9nRAJSSr1NdLFiFlaQ',
-  );
+  static const String token = String.fromEnvironment('TMDB_TOKEN',);
 
   // URL de base pour les images TMDB
   static const String imageUrl = 'https://image.tmdb.org/t/p/w500';
