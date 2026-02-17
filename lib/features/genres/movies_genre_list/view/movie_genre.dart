@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobmovizz/core/utils/constants.dart';
 import 'package:mobmovizz/core/widgets/app_bar.dart';
 import 'package:mobmovizz/core/widgets/circular_progress.dart';
+import 'package:mobmovizz/core/widgets/error_handler_widget.dart';
 import 'package:mobmovizz/features/genres/movies_genre_list/bloc/movie_genres_bloc.dart';
 import 'package:mobmovizz/features/genres/movies_genre_list/view/genre_section.dart';
 import 'package:mobmovizz/l10n/app_localizations.dart';
@@ -60,35 +61,11 @@ class _MovieGenreState extends State<MovieGenre>
               },
             );
           } else if (state is MovieGenresError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    size: 60,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Oups !',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: Text(
-                      state.message,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            return ErrorHandlerWidget(
+              errorMessage: state.message,
+              onRetry: () {
+                context.read<MovieGenresBloc>().add(FetchGenres());
+              },
             );
           } else {
             return const Center(child: Text('Search for genres'));

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobmovizz/core/theme/colors.dart';
 import 'package:mobmovizz/core/widgets/app_bar.dart';
 import 'package:mobmovizz/core/widgets/circular_progress.dart';
 import 'package:mobmovizz/features/watchlist/watchlist.dart';
@@ -146,7 +145,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                             child: Center(
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: royalBlueDerived,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ),
@@ -232,13 +231,13 @@ class _WatchlistViewState extends State<WatchlistView> {
                           Icon(
                             isUpcoming ? Icons.alarm : Icons.alarm_off,
                             size: 16,
-                            color: isUpcoming ? royalBlueDerived : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                            color: isUpcoming ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                           SizedBox(width: 4),
                           Text(
                             '${AppLocalizations.of(context)?.reminder_label ?? 'Reminder'}: ${DateFormatter.formatDateTime(item.reminderDate, context)}',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: isUpcoming ? royalBlueDerived : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                              color: isUpcoming ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                             ),
                           ),
                         ],
@@ -256,11 +255,11 @@ class _WatchlistViewState extends State<WatchlistView> {
                           icon: Icon(
                             Icons.edit,
                             size: 16,
-                            color: royalBlueDerived,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                           label: Text(
                             AppLocalizations.of(context)?.edit ?? 'Edit',
-                            style: TextStyle(color: royalBlueDerived),
+                            style: TextStyle(color: Theme.of(context).colorScheme.primary),
                           ),
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -338,7 +337,7 @@ class _WatchlistViewState extends State<WatchlistView> {
               
               // Date picker
               ListTile(
-                leading: Icon(Icons.calendar_today, color: royalBlueDerived),
+                leading: Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.primary),
                 title: Text(
                   '${l10n.date}: ${DateFormatter.formatDateTime(selectedDate, context)}',
                   style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
@@ -355,14 +354,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                         ? '${l10n.movie_releases_on} ${DateFormatter.formatReleaseDate(item.releaseDate, context)}'
                         : null,
                     builder: (context, child) {
-                      return Theme(
-                        data: Theme.of(context).copyWith(
-                          colorScheme: Theme.of(context).colorScheme.copyWith(
-                            primary: royalBlueDerived,
-                          ),
-                        ),
-                        child: child!,
-                      );
+                      return child!;
                     },
                   );
                   if (picked != null) {
@@ -381,7 +373,7 @@ class _WatchlistViewState extends State<WatchlistView> {
               
               // Time picker  
               ListTile(
-                leading: Icon(Icons.access_time, color: royalBlueDerived),
+                leading: Icon(Icons.access_time, color: Theme.of(context).colorScheme.primary),
                 title: Text(
                   '${l10n.time}: ${selectedTime.format(context)}',
                   style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
@@ -391,14 +383,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                     context: context,
                     initialTime: selectedTime,
                     builder: (context, child) {
-                      return Theme(
-                        data: Theme.of(context).copyWith(
-                          colorScheme: Theme.of(context).colorScheme.copyWith(
-                            primary: royalBlueDerived,
-                          ),
-                        ),
-                        child: child!,
-                      );
+                      return child!;
                     },
                   );
                   if (picked != null) {
@@ -429,7 +414,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                   });
                 },
                 checkColor: Theme.of(context).colorScheme.onPrimary,
-                activeColor: royalBlueDerived,
+                activeColor: Theme.of(context).colorScheme.primary,
               ),
             ],
           ),
@@ -450,7 +435,6 @@ class _WatchlistViewState extends State<WatchlistView> {
                       content: Text(
                         NotificationDateValidator.getValidationErrorMessage(item.releaseDate),
                       ),
-                      backgroundColor: Colors.red,
                     ),
                   );
                   return;
@@ -477,8 +461,8 @@ class _WatchlistViewState extends State<WatchlistView> {
                 setState(() {}); // Force le rebuild du parent
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: royalBlueDerived,
-                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
               child: Text(l10n.update),
             ),

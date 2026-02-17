@@ -3,6 +3,7 @@ import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobmovizz/core/common/common_header.dart';
+import 'package:mobmovizz/core/theme/colors.dart';
 import 'package:mobmovizz/core/widgets/circular_progress.dart';
 import 'package:mobmovizz/features/home/top_rated/bloc/top_rated_bloc.dart';
 import 'package:mobmovizz/features/movie_details/view/movie_details_view.dart';
@@ -20,6 +21,7 @@ class TopRatedView extends StatelessWidget {
           return Center(child: mainCircularProgress());
         } else if (state is TopRatedLoaded) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CommonHeader(
                 headerTitle: localizations?.top_rated ?? 'Top Rated',
@@ -29,14 +31,12 @@ class TopRatedView extends StatelessWidget {
               CarouselSlider(
                 options: CarouselOptions(
                   aspectRatio: 4 / 3,
-                  viewportFraction: 0.45,
+                  viewportFraction: 0.52,
                   initialPage: 0,
                   enableInfiniteScroll: true,
                   reverse: false,
                   autoPlay: false,
-                  autoPlayInterval: const Duration(seconds: 3),
-                  autoPlayAnimationDuration: const Duration(milliseconds: 1000),
-                  autoPlayCurve: Curves.fastOutSlowIn,
+                  padEnds: true,
                   scrollDirection: Axis.horizontal,
                 ),
                 items: state.upcomingModel.results
@@ -51,12 +51,12 @@ class TopRatedView extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          margin: const EdgeInsets.all(5.0),
+                          margin: const EdgeInsets.symmetric(horizontal: 6),
                           child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(5.0)),
-                            child: Column(
-                              children: <Widget>[
+                            borderRadius: BorderRadius.circular(12),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
                                 if (item.posterPath != null && item.posterPath!.isNotEmpty)
                                   CachedNetworkImage(
                                     progressIndicatorBuilder:
@@ -72,8 +72,6 @@ class TopRatedView extends StatelessWidget {
                                   )
                                 else
                                   Container(
-                                    height: 200,
-                                    width: double.infinity,
                                     color: Theme.of(context).colorScheme.surfaceContainer,
                                     child: Icon(
                                       Icons.photo_outlined,
@@ -81,6 +79,55 @@ class TopRatedView extends StatelessWidget {
                                       size: 50,
                                     ),
                                   ),
+                                // ── Bottom gradient with title ──
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.fromLTRB(8, 28, 8, 8),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          Colors.black.withValues(alpha: 0.8),
+                                          Colors.transparent,
+                                        ],
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          item.title ?? '',
+                                          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        if (item.voteAverage != null && item.voteAverage! > 0) ...[
+                                          const SizedBox(height: 2),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.star_rounded, color: accentAmber, size: 14),
+                                              const SizedBox(width: 2),
+                                              Text(
+                                                item.voteAverage!.toStringAsFixed(1),
+                                                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                                  color: Colors.white70,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -88,42 +135,13 @@ class TopRatedView extends StatelessWidget {
                       ),
                     )
                     .toList(),
-              )
+              ),
             ],
           );
         } else if (state is TopRatedError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline_rounded,
-                  size: 60,
-                  color: Theme.of(context).colorScheme.error,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Oups !',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Text(
-                    state.message,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
+          return const SizedBox.shrink();
         } else {
-          return const Center(child: Text('Search for Top rated'));
+          return const SizedBox.shrink();
         }
       },
     );

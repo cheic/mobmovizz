@@ -632,6 +632,12 @@ abstract class AppLocalizations {
   /// **'Location permissions are denied'**
   String get location_permissions_are_denied;
 
+  /// No description provided for @popular.
+  ///
+  /// In en, this message translates to:
+  /// **'Popular'**
+  String get popular;
+
   /// No description provided for @top_rated.
   ///
   /// In en, this message translates to:

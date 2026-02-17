@@ -7,7 +7,7 @@ import 'package:mobmovizz/features/genres/movies_by_genre/bloc/movies_by_genre_b
 import 'package:mobmovizz/features/genres/movies_by_genre/data/movies_by_genre_service.dart';
 import 'package:mobmovizz/features/genres/movies_genre_list/view/movie_grid_view.dart';
 import 'package:mobmovizz/features/movie_details/view/movie_details_view.dart';
-import 'package:mobmovizz/l10n/app_localizations.dart';
+
 
 class GenreSection extends StatelessWidget {
   final int genreId;
@@ -21,52 +21,32 @@ class GenreSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6), // Réduit le padding horizontal et vertical
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => MoviesGridViewPage(
-                        genreId: genreId,
-                        genreName: genreName,
-                      ),
-                    ),
-                  );
-                },
-                style: TextButton.styleFrom(
-                  
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => MoviesGridViewPage(
+                    genreId: genreId,
+                    genreName: genreName,
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      genreName,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    const Icon(
-                      Icons.double_arrow,
-                     
-                      size: 17,
-                    ),
-                  ],
+              );
+            },
+            child: Row(
+              children: [
+                Text(
+                  genreName,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
-              ),
-            ],
+                const SizedBox(width: 6),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ],
+            ),
           ),
         ),
         BlocProvider(
@@ -85,10 +65,11 @@ class GenreSection extends StatelessWidget {
                 ));
               } else if (state is MoviesByGenreLoaded) {
                 return SizedBox(
-                  height: 200,
+                  height: 210,
                   child: ListView.builder(
                     key: PageStorageKey<String>('genre_$genreId'),
                     scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemCount: state.movies.results?.length ?? 0,
                     itemBuilder: (context, index) {
                       final movie = state.movies.results![index];
@@ -103,12 +84,9 @@ class GenreSection extends StatelessWidget {
                         },
                         child: Container(
                           width: 140,
-                          height: 200,
-                          margin: index == 0 
-                              ? const EdgeInsets.only(left: 16, right: 8) // Premier élément : 16 à gauche, 8 à droite
-                              : const EdgeInsets.symmetric(horizontal: 8), // Autres éléments : 8 de chaque côté
+                          margin: const EdgeInsets.only(right: 12),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(12),
                             child: (movie.posterPath != null && movie.posterPath!.isNotEmpty)
                                 ? CachedNetworkImage(
                                     key: Key(movie.id.toString()),
@@ -145,7 +123,15 @@ class GenreSection extends StatelessWidget {
                   ),
                 );
               } else if (state is MoviesByGenreError) {
-                return Center(child: Text("${AppLocalizations.of(context)?.error ?? "Error"}: ${state.message}"));
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text(
+                    state.message,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                );
               } else {
                 return const SizedBox.shrink();
               }

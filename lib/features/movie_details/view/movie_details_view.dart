@@ -11,7 +11,6 @@ import 'package:mobmovizz/core/utils/date_formatter.dart';
 import 'package:mobmovizz/core/utils/format_minutes.dart';
 import 'package:mobmovizz/core/utils/rating.dart';
 import 'package:mobmovizz/core/utils/currency_formatter.dart';
-import 'package:mobmovizz/core/widgets/app_bar.dart';
 import 'package:mobmovizz/core/widgets/youtube_palyer_view.dart';
 import 'package:mobmovizz/core/widgets/add_to_watchlist_dialog.dart';
 import 'package:mobmovizz/l10n/app_localizations.dart';
@@ -29,7 +28,7 @@ class MovieDetailsView extends StatefulWidget {
 }
 
 class _MovieDetailsViewState extends State<MovieDetailsView> {
-  String countryCode = 'FR'; // Default to FR
+  String countryCode = 'FR';
 
   @override
   void initState() {
@@ -39,17 +38,12 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
 
   void _initializeCountryCode() async {
     try {
-      // Code pays par défaut
       if (mounted) {
-        setState(() {
-          countryCode = _getDeviceCountryCode();
-        });
+        setState(() => countryCode = _getDeviceCountryCode());
       }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          countryCode = _getDeviceCountryCode();
-        });
+        setState(() => countryCode = _getDeviceCountryCode());
       }
     }
   }
@@ -60,331 +54,457 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
       create: (context) => MovieDetailsBloc(GetIt.I<MovieDetailsService>())
         ..add(FetchMovieDetails(widget.movieId)),
       child: Scaffold(
-        appBar: mainAppBar(
-          context: context,
-          iconTheme: IconThemeData(
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-          title: AppLocalizations.of(context)?.details ?? "Details",
-        ),
         body: BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
           builder: (context, state) {
             if (state is MovieDetailsLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is MovieDetailsError) {
-              return Center(
-                child: Text(
-                  state.message,
-                ),
-              );
+              return _buildErrorState(state.message);
             } else if (state is MovieDetailsLoaded) {
-              final movie = state.movieDetailsModel;
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (movie.backdropPath != null)
-                      Stack(
-                        children: [
-                          Container(
-                            height: 280,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(24),
-                                bottomRight: Radius.circular(24),
-                              ),
-                            ),
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  'https://image.tmdb.org/t/p/w500${movie.backdropPath}',
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Container(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                                child: Icon(
-                                  Icons.image_outlined,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withValues(alpha: 0.5),
-                                  size: 50,
-                                ),
-                              ),
-                            ),
-                          ),
-                          if (state.videoResultsModel.results.isNotEmpty)
-                            Positioned(
-                              bottom: 10,
-                              right: 10,
-                              child: GestureDetector(
-                                onTap: () {
-                                  showYouTubePlayerDialog(
-                                      context,
-                                      state
-                                          .videoResultsModel.results.first.key);
-                                },
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white.withValues(alpha: 0.85),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.3),
-                                        blurRadius: 8,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.play_arrow,
-                                    color: Colors.black87,
-                                    size: 36,
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            movie.title ??
-                                AppLocalizations.of(context)?.no_title ??
-                                'No Title',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            movie.tagline ?? '',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  fontStyle: FontStyle.italic,
-                                ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            AppLocalizations.of(context)?.overview ??
-                                'Overview',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            movie.overview ??
-                                AppLocalizations.of(context)
-                                    ?.no_overview_available ??
-                                'No overview available',
-                          ),
-                          const SizedBox(height: 16),
-                          Wrap(
-                            runSpacing: 10,
-                            spacing: 8,
-                            children: movie.genres
-                                    ?.map((genre) => Container(
-                                          margin: EdgeInsets.only(
-                                              right: 8, bottom: 4),
-                                          child: Chip(
-                                            elevation: 2,
-                                            materialTapTargetSize:
-                                                MaterialTapTargetSize
-                                                    .shrinkWrap,
-                                            side: BorderSide.none,
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            shadowColor: Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                                .withValues(alpha: 0.3),
-                                            label: Text(
-                                              genre.name ?? '',
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimary,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-                                        ))
-                                    .toList() ??
-                                [],
-                          ),
-                          const SizedBox(height: 16),
-                          _buildInfoRow(
-                              AppLocalizations.of(context)?.release_date ??
-                                  'Release Date',
-                              DateFormatter.formatReleaseDate(
-                                  movie.releaseDate?.toString(), context)),
-                          _buildInfoRow(
-                              AppLocalizations.of(context)?.runtime ??
-                                  'Runtime',
-                              formatRuntime(movie.runtime!) ?? ""),
-                          _buildVoteAverageInfo(
-                              AppLocalizations.of(context)?.vote_average ??
-                                  'Vote Average',
-                              buildVoteAverageStars(movie.voteAverage)),
-                          _buildInfoRow(
-                              AppLocalizations.of(context)?.vote_count ??
-                                  'Vote Count',
-                              '${movie.voteCount ?? 'N/A'}'),
-                          _buildInfoRow(
-                              AppLocalizations.of(context)?.budget ?? 'Budget',
-                              CurrencyFormatter.formatCurrency(movie.budget)),
-                          _buildInfoRow(
-                              AppLocalizations.of(context)?.revenue ??
-                                  'Revenue',
-                              CurrencyFormatter.formatCurrency(movie.revenue)),
-                          const SizedBox(height: 24),
-                          // Section provider cachée
-                          // Espacement pour éviter que le FloatingActionButton cache le contenu
-                          const SizedBox(height: 80),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return _buildDetailsBody(context, state);
             }
             return const SizedBox.shrink();
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
-          builder: (context, state) {
-            if (state is MovieDetailsLoaded) {
-              final movie = state.movieDetailsModel;
-              return BlocBuilder<WatchlistBloc, WatchlistState>(
-                builder: (context, watchlistState) {
-                  // Check if movie is in watchlist
-                  bool isInWatchlist = false;
-                  if (watchlistState is WatchlistLoaded) {
-                    isInWatchlist = watchlistState.watchlist
-                        .any((item) => item.id == movie.id);
-                  }
-
-                  return BlocListener<WatchlistBloc, WatchlistState>(
-                    listener: (context, favState) {
-                      if (favState is WatchlistError) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(favState.message),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      } else if (favState is WatchlistLoaded) {
-                        final isNowInWatchlist = favState.watchlist
-                            .any((item) => item.id == movie.id);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(isNowInWatchlist
-                                ? AppLocalizations.of(context)
-                                        ?.added_to_watchlist ??
-                                    'Added to watchlist!'
-                                : AppLocalizations.of(context)
-                                        ?.removed_from_watchlist ??
-                                    'Removed from watchlist!'),
-                            backgroundColor:
-                                isNowInWatchlist ? Colors.green : Colors.orange,
-                          ),
-                        );
-                      }
-                    },
-                    child: FloatingActionButton.extended(
-                      onPressed: () {
-                        if (isInWatchlist) {
-                          // Remove from watchlist
-                          context
-                              .read<WatchlistBloc>()
-                              .add(RemoveFromWatchlistEvent(movie.id!));
-                        } else {
-                          // Add to watchlist
-                          showDialog(
-                            context: context,
-                            builder: (context) => AddToWatchlistDialog(
-                              movieId: movie.id!,
-                              title: movie.title ??
-                                  AppLocalizations.of(context)?.unknown ??
-                                  'Unknown',
-                              posterPath: movie.posterPath,
-                              releaseDate: movie.releaseDate?.toString(),
-                            ),
-                          );
-                        }
-                      },
-                      backgroundColor:
-                          isInWatchlist ? Colors.orange : royalBlueDerived,
-                      icon: Icon(isInWatchlist
-                          ? Icons.bookmark_remove
-                          : Icons.bookmark_add),
-                      label: Text(isInWatchlist
-                          ? AppLocalizations.of(context)
-                                  ?.remove_from_watchlist ??
-                              'Remove from Watchlist'
-                          : AppLocalizations.of(context)
-                                  ?.add_to_watchlist_button ??
-                              'Add to Watchlist'),
-                    ),
-                  );
-                },
-              );
-            }
-            return SizedBox.shrink();
-          },
-        ),
+        floatingActionButton: _buildWatchlistFAB(),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+  Widget _buildErrorState(String message) {
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          leading: const BackButton(),
+          title: Text(AppLocalizations.of(context)?.details ?? 'Details'),
+        ),
+        SliverFillRemaining(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.error_outline_rounded, size: 64,
+                    color: Theme.of(context).colorScheme.error),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Text(message, textAlign: TextAlign.center),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailsBody(BuildContext context, MovieDetailsLoaded state) {
+    final movie = state.movieDetailsModel;
+    final hasBackdrop = movie.backdropPath != null;
+
+    return CustomScrollView(
+      slivers: [
+        // ── Immersive SliverAppBar ──
+        SliverAppBar(
+          expandedHeight: hasBackdrop ? 320 : 0,
+          pinned: true,
+          stretch: true,
+          leading: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.4),
+              shape: BoxShape.circle,
+            ),
+            child: const BackButton(color: Colors.white),
+          ),
+          flexibleSpace: hasBackdrop
+              ? FlexibleSpaceBar(
+                  background: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl:
+                            'https://image.tmdb.org/t/p/w780${movie.backdropPath}',
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) => Container(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          child: const Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (_, __, ___) => Container(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          child: Icon(Icons.image_outlined,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.5),
+                              size: 50),
+                        ),
+                      ),
+                      // Gradient overlay
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        height: 160,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Theme.of(context).scaffoldBackgroundColor,
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Play button
+                      if (state.videoResultsModel.results.isNotEmpty)
+                        Positioned(
+                          bottom: 20,
+                          right: 20,
+                          child: GestureDetector(
+                            onTap: () => showYouTubePlayerDialog(
+                                context,
+                                state.videoResultsModel.results.first.key),
+                            child: Container(
+                              width: 56,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context).colorScheme.primary,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.4),
+                                    blurRadius: 16,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.play_arrow_rounded,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                size: 32,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              : null,
+        ),
+
+        // ── Content ──
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title
+                Text(
+                  movie.title ??
+                      AppLocalizations.of(context)?.no_title ?? 'No Title',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+
+                // Tagline
+                if (movie.tagline != null && movie.tagline!.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    movie.tagline!,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontStyle: FontStyle.italic,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.6),
+                        ),
+                  ),
+                ],
+
+                // ── Quick Stats Row ──
+                const SizedBox(height: 16),
+                _buildQuickStats(context, movie),
+
+                // ── Genre Chips ──
+                if (movie.genres != null && movie.genres!.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: movie.genres!
+                        .map((genre) => Chip(
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              label: Text(genre.name ?? ''),
+                            ))
+                        .toList(),
+                  ),
+                ],
+
+                // ── Overview ──
+                const SizedBox(height: 24),
+                Text(
+                  AppLocalizations.of(context)?.overview ?? 'Overview',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  movie.overview ??
+                      AppLocalizations.of(context)?.no_overview_available ??
+                      'No overview available',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        height: 1.6,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.85),
+                      ),
+                ),
+
+                // ── Details Card ──
+                const SizedBox(height: 24),
+                _buildDetailsCard(context, movie),
+
+                // Bottom spacing for FAB
+                const SizedBox(height: 100),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickStats(BuildContext context, dynamic movie) {
+    return Row(
+      children: [
+        // Rating
+        if (movie.voteAverage != null) ...[
+          Icon(Icons.star_rounded, color: accentAmber, size: 20),
+          const SizedBox(width: 4),
           Text(
-            value,
+            movie.voteAverage!.toStringAsFixed(1),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+          _statDivider(context),
+        ],
+        // Runtime
+        if (movie.runtime != null && movie.runtime! > 0) ...[
+          Icon(Icons.schedule_rounded,
+              size: 18,
+              color:
+                  Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
+          const SizedBox(width: 4),
+          Text(
+            formatRuntime(movie.runtime!) ?? '',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          _statDivider(context),
+        ],
+        // Release Date
+        if (movie.releaseDate != null) ...[
+          Icon(Icons.calendar_today_rounded,
+              size: 16,
+              color:
+                  Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              DateFormatter.formatReleaseDate(
+                  movie.releaseDate?.toString(), context),
+              style: Theme.of(context).textTheme.bodyMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _statDivider(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Container(
+        width: 1,
+        height: 16,
+        color: Theme.of(context).colorScheme.outlineVariant,
+      ),
+    );
+  }
+
+  Widget _buildDetailsCard(BuildContext context, dynamic movie) {
+    final l10n = AppLocalizations.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+      ),
+      child: Column(
+        children: [
+          _buildDetailRow(
+            context,
+            Icons.how_to_vote_outlined,
+            l10n?.vote_average ?? 'Vote Average',
+            child: buildVoteAverageStars(movie.voteAverage),
+          ),
+          _divider(context),
+          _buildDetailRow(
+            context,
+            Icons.people_outline_rounded,
+            l10n?.vote_count ?? 'Vote Count',
+            value: '${movie.voteCount ?? 'N/A'}',
+          ),
+          _divider(context),
+          _buildDetailRow(
+            context,
+            Icons.account_balance_wallet_outlined,
+            l10n?.budget ?? 'Budget',
+            value: CurrencyFormatter.formatCurrency(movie.budget),
+          ),
+          _divider(context),
+          _buildDetailRow(
+            context,
+            Icons.trending_up_rounded,
+            l10n?.revenue ?? 'Revenue',
+            value: CurrencyFormatter.formatCurrency(movie.revenue),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildVoteAverageInfo(String label, Widget stars) {
+  Widget _buildDetailRow(BuildContext context, IconData icon, String label,
+      {String? value, Widget? child}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-          stars
+          Icon(icon,
+              size: 20,
+              color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+          ),
+          if (child != null) child,
+          if (value != null)
+            Text(
+              value,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.7),
+                  ),
+            ),
         ],
       ),
+    );
+  }
+
+  Widget _divider(BuildContext context) {
+    return Divider(
+      height: 1,
+      color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3),
+    );
+  }
+
+  Widget _buildWatchlistFAB() {
+    return BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
+      builder: (context, state) {
+        if (state is MovieDetailsLoaded) {
+          final movie = state.movieDetailsModel;
+          return BlocBuilder<WatchlistBloc, WatchlistState>(
+            builder: (context, watchlistState) {
+              bool isInWatchlist = false;
+              if (watchlistState is WatchlistLoaded) {
+                isInWatchlist = watchlistState.watchlist
+                    .any((item) => item.id == movie.id);
+              }
+
+              return BlocListener<WatchlistBloc, WatchlistState>(
+                listener: (context, favState) {
+                  if (favState is WatchlistError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(favState.message)),
+                    );
+                  } else if (favState is WatchlistLoaded) {
+                    final isNowInWatchlist = favState.watchlist
+                        .any((item) => item.id == movie.id);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(isNowInWatchlist
+                            ? AppLocalizations.of(context)
+                                    ?.added_to_watchlist ??
+                                'Added to watchlist!'
+                            : AppLocalizations.of(context)
+                                    ?.removed_from_watchlist ??
+                                'Removed from watchlist!'),
+                      ),
+                    );
+                  }
+                },
+                child: FloatingActionButton.extended(
+                  onPressed: () {
+                    if (isInWatchlist) {
+                      context
+                          .read<WatchlistBloc>()
+                          .add(RemoveFromWatchlistEvent(movie.id!));
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AddToWatchlistDialog(
+                          movieId: movie.id!,
+                          title: movie.title ??
+                              AppLocalizations.of(context)?.unknown ??
+                              'Unknown',
+                          posterPath: movie.posterPath,
+                          releaseDate: movie.releaseDate?.toString(),
+                        ),
+                      );
+                    }
+                  },
+                  icon: Icon(isInWatchlist
+                      ? Icons.bookmark_remove_rounded
+                      : Icons.bookmark_add_rounded),
+                  label: Text(isInWatchlist
+                      ? AppLocalizations.of(context)
+                              ?.remove_from_watchlist ??
+                          'Remove from Watchlist'
+                      : AppLocalizations.of(context)
+                              ?.add_to_watchlist_button ??
+                          'Add to Watchlist'),
+                ),
+              );
+            },
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }

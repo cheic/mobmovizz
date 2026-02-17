@@ -281,6 +281,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Les permissions de localisation sont refusées';
 
   @override
+  String get popular => 'Populaires';
+
+  @override
   String get top_rated => 'Les Mieux Notés';
 
   @override

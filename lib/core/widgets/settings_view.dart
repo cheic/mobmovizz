@@ -113,9 +113,8 @@ class _SettingsViewState extends State<SettingsView> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(hasPerms 
-                                  ? '✅ ${AppLocalizations.of(context)?.permissions_granted ?? "Permissions granted"}' 
-                                  : '❌ ${AppLocalizations.of(context)?.permissions_missing ?? "Permissions missing"}'),
-                                backgroundColor: hasPerms ? Colors.green : Colors.orange,
+                                  ? '${AppLocalizations.of(context)?.permissions_granted ?? "Permissions granted"}' 
+                                  : '${AppLocalizations.of(context)?.permissions_missing ?? "Permissions missing"}'),
                               ),
                             );
                           }
@@ -126,9 +125,8 @@ class _SettingsViewState extends State<SettingsView> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(granted 
-                                    ? '✅ ${AppLocalizations.of(context)?.permissions_granted_now ?? "Permissions granted now"}' 
-                                    : '❌ ${AppLocalizations.of(context)?.permissions_still_denied ?? "Permissions still denied"}'),
-                                  backgroundColor: granted ? Colors.green : Colors.red,
+                                    ? '${AppLocalizations.of(context)?.permissions_granted_now ?? "Permissions granted now"}' 
+                                    : '${AppLocalizations.of(context)?.permissions_still_denied ?? "Permissions still denied"}'),
                                 ),
                               );
                             }
@@ -137,8 +135,7 @@ class _SettingsViewState extends State<SettingsView> {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('❌ ${AppLocalizations.of(context)?.error_occurred(e.toString()) ?? "Error: $e"}'),
-                                backgroundColor: Colors.red,
+                                content: Text('${AppLocalizations.of(context)?.error_occurred(e.toString()) ?? "Error: $e"}'),
                               ),
                             );
                           }
