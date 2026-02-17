@@ -109,26 +109,35 @@ class GenreSection extends StatelessWidget {
                               : const EdgeInsets.symmetric(horizontal: 8), // Autres éléments : 8 de chaque côté
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: CachedNetworkImage(
-                              key: Key(movie.id.toString()),
-                              imageUrl:
-                                  'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-                              placeholder: (context, url) => Center(
-                                  child: SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: mainCircularProgress(),
-                              )),
-                              errorWidget: (context, url, error) => Container(
-                                color: Theme.of(context).colorScheme.surfaceContainer,
-                                child: Icon(
-                                  Icons.image_outlined,
-                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                                  size: 50,
-                                ),
-                              ),
-                              fit: BoxFit.cover,
-                            ),
+                            child: (movie.posterPath != null && movie.posterPath!.isNotEmpty)
+                                ? CachedNetworkImage(
+                                    key: Key(movie.id.toString()),
+                                    imageUrl:
+                                        'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                                    placeholder: (context, url) => Center(
+                                        child: SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: mainCircularProgress(),
+                                    )),
+                                    errorWidget: (context, url, error) => Container(
+                                      color: Theme.of(context).colorScheme.surfaceContainer,
+                                      child: Icon(
+                                        Icons.image_outlined,
+                                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                        size: 50,
+                                      ),
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(
+                                    color: Theme.of(context).colorScheme.surfaceContainer,
+                                    child: Icon(
+                                      Icons.image_outlined,
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                      size: 50,
+                                    ),
+                                  ),
                           ),
                         ),
                       );

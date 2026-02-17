@@ -50,6 +50,30 @@ class _MoviesGridViewPageState extends State<MoviesGridViewPage> {
     _filterController = FilterGridListController(
       isGridView: _appPreferences.getGridView(),
     );
+    // Vérifier la position du scroll après le build initial
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkScrollPosition();
+    });
+  }
+
+  void _checkScrollPosition() {
+    if (_scrollController.hasClients) {
+      final isAtTop = _scrollController.position.pixels == 0;
+      if (_isAtTop != isAtTop) {
+        setState(() {
+          _isAtTop = isAtTop;
+        });
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Re-vérifier la position du scroll quand on revient sur la page
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkScrollPosition();
+    });
   }
 
   void _onScroll() {
@@ -196,17 +220,19 @@ class _MoviesGridViewPageState extends State<MoviesGridViewPage> {
           }
         },
       ),
-      floatingActionButton: AnimatedOpacity(
-        opacity: _isAtTop ? 0.0 : 1.0,
-        duration: const Duration(milliseconds: 300),
-        child: FloatingActionButton(
-          onPressed: _scrollToTop,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          child: Icon(
-            Icons.arrow_upward,
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
-        ),
+      floatingActionButton: AnimatedScale(
+        scale: _isAtTop ? 0.0 : 1.0,
+        duration: const Duration(milliseconds: 200),
+        child: _isAtTop
+            ? const SizedBox.shrink()
+            : FloatingActionButton(
+                onPressed: _scrollToTop,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: Icon(
+                  Icons.arrow_upward,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
       ),
     );
   }
@@ -251,24 +277,33 @@ class _MoviesGridViewPageState extends State<MoviesGridViewPage> {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: CachedNetworkImage(
-          imageUrl: 'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-          placeholder: (context, url) => Center(
-              child: SizedBox(
-            width: 50,
-            height: 50,
-            child: mainCircularProgress(),
-          )),
-          errorWidget: (context, url, error) => Container(
-            color: Theme.of(context).colorScheme.surfaceContainer,
-            child: Icon(
-              Icons.image_outlined,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-              size: 50,
-            ),
-          ),
-          fit: BoxFit.cover,
-        ),
+        child: (movie.posterPath != null && movie.posterPath!.isNotEmpty)
+            ? CachedNetworkImage(
+                imageUrl: 'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                placeholder: (context, url) => Center(
+                    child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: mainCircularProgress(),
+                )),
+                errorWidget: (context, url, error) => Container(
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  child: Icon(
+                    Icons.image_outlined,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                    size: 50,
+                  ),
+                ),
+                fit: BoxFit.cover,
+              )
+            : Container(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                child: Icon(
+                  Icons.image_outlined,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                  size: 50,
+                ),
+              ),
       ),
     );
   }

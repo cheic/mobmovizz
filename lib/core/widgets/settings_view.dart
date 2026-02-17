@@ -1,13 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:mobmovizz/core/theme/theme_bloc.dart';
 import 'package:mobmovizz/core/widgets/app_bar.dart';
 import 'package:mobmovizz/core/widgets/_watchlist_reminder_switch.dart';
 import 'package:mobmovizz/core/services/notification_service.dart';
 import 'package:mobmovizz/l10n/app_localizations.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  PackageInfo? _packageInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPackageInfo();
+  }
+
+  Future<void> _loadPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() => _packageInfo = info);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +103,8 @@ class SettingsView extends StatelessWidget {
                     // Vérifier permissions
                     ListTile(
                       leading: Icon(Icons.security),
-                      title: Text('Vérifier Permissions'),
-                      subtitle: Text('Vérifier l\'état des permissions'),
+                      title: Text(AppLocalizations.of(context)?.check_permissions ?? 'Check Permissions'),
+                      subtitle: Text(AppLocalizations.of(context)?.check_permissions_status ?? 'Check permissions status'),
                       onTap: () async {
                         try {
                           final hasPerms = await NotificationService.hasPermissions();
@@ -92,8 +113,8 @@ class SettingsView extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(hasPerms 
-                                  ? '✅ Permissions accordées' 
-                                  : '❌ Permissions manquantes'),
+                                  ? '✅ ${AppLocalizations.of(context)?.permissions_granted ?? "Permissions granted"}' 
+                                  : '❌ ${AppLocalizations.of(context)?.permissions_missing ?? "Permissions missing"}'),
                                 backgroundColor: hasPerms ? Colors.green : Colors.orange,
                               ),
                             );
@@ -105,8 +126,8 @@ class SettingsView extends StatelessWidget {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(granted 
-                                    ? '✅ Permissions accordées maintenant' 
-                                    : '❌ Permissions toujours refusées'),
+                                    ? '✅ ${AppLocalizations.of(context)?.permissions_granted_now ?? "Permissions granted now"}' 
+                                    : '❌ ${AppLocalizations.of(context)?.permissions_still_denied ?? "Permissions still denied"}'),
                                   backgroundColor: granted ? Colors.green : Colors.red,
                                 ),
                               );
@@ -116,7 +137,7 @@ class SettingsView extends StatelessWidget {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('❌ Erreur: $e'),
+                                content: Text('❌ ${AppLocalizations.of(context)?.error_occurred(e.toString()) ?? "Error: $e"}'),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -141,12 +162,12 @@ class SettingsView extends StatelessWidget {
                     
                     ListTile(
                       title: Text(AppLocalizations.of(context)?.version ?? 'Version'),
-                      subtitle: Text('1.0.0'),
+                      subtitle: Text(_packageInfo?.version ?? '...'),
                     ),
                     
                     ListTile(
                       title: Text(AppLocalizations.of(context)?.build ?? 'Build'),
-                      subtitle: Text('3'),
+                      subtitle: Text(_packageInfo?.buildNumber ?? '...'),
                     ),
                   ],
                 ),

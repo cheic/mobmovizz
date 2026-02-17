@@ -57,18 +57,30 @@ class UpcomingView extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(5.0)),
                             child: Stack(
                               children: <Widget>[
-                                CachedNetworkImage(
-                                  progressIndicatorBuilder:
-                                      (context, url, progress) => Center(
-                                    child: mainCircularProgress(
-                                      value: progress.progress,
+                                if (item.posterPath != null && item.posterPath!.isNotEmpty)
+                                  CachedNetworkImage(
+                                    progressIndicatorBuilder:
+                                        (context, url, progress) => Center(
+                                      child: mainCircularProgress(
+                                        value: progress.progress,
+                                      ),
+                                    ),
+                                    imageUrl:
+                                        'https://image.tmdb.org/t/p/w500${item.posterPath}',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  )
+                                else
+                                  Container(
+                                    height: 200,
+                                    width: double.infinity,
+                                    color: Theme.of(context).colorScheme.surfaceContainer,
+                                    child: Icon(
+                                      Icons.photo_outlined,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                      size: 50,
                                     ),
                                   ),
-                                  imageUrl:
-                                      'https://image.tmdb.org/t/p/w500${item.posterPath}',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                ),
                               ],
                             ),
                           ),
@@ -80,7 +92,36 @@ class UpcomingView extends StatelessWidget {
             ],
           );
         } else if (state is UpcomingsError) {
-          return Center(child: Text('Error: ${state.message}'));
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: 60,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Oups !',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Text(
+                    state.message,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
         } else {
           return const Center(child: Text('Search for upcomings'));
         }

@@ -51,12 +51,18 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
       - name: Build and sign APK
-        uses: maierj/flutter-build-android@v1
-        with:
-          upload-keystore: ${{ secrets.KEYSTORE_BASE64 }}
-          keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
-          key-alias: ${{ secrets.KEY_ALIAS }}
-          key-password: ${{ secrets.KEY_PASSWORD }}
+        env:
+          KEYSTORE_PATH: /tmp/keystore.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "${{ secrets.MOBMOVIZZ_KEYSTORE }}" | base64 -d > $KEYSTORE_PATH
+          flutter build apk --release \
+            --dart-define=KEYSTORE_PATH=$KEYSTORE_PATH \
+            --dart-define=KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD \
+            --dart-define=KEY_ALIAS=$KEY_ALIAS \
+            --dart-define=KEY_PASSWORD=$KEY_PASSWORD
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:

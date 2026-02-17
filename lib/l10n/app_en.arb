@@ -135,5 +135,19 @@
   "filter_by_year": "Filter by year",
   "all_years": "All years",
   "no_internet_connection": "No internet connection",
-  "check_your_connection": "Check your connection and try again"
+  "check_your_connection": "Check your connection and try again",
+  "check_permissions": "Check Permissions",
+  "check_permissions_status": "Check permissions status",
+  "permissions_granted": "Permissions granted",
+  "permissions_missing": "Permissions missing",
+  "permissions_granted_now": "Permissions granted now",
+  "permissions_still_denied": "Permissions still denied",
+  "error_occurred": "Error: {error}",
+  "@error_occurred": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

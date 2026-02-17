@@ -33,10 +33,10 @@ class TMDBDisclaimerPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: royalBlue.withOpacity(0.1),
+                color: royalBlue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.0),
                 border: Border.all(
-                  color: royalBlue.withOpacity(0.3),
+                  color: royalBlue.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -95,7 +95,7 @@ class TMDBDisclaimerPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Row(

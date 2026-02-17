@@ -74,17 +74,14 @@ class ApiService {
   }
 
   Future<Options> _buildOptions(bool includeBearerToken, contentType) async {
-    // Récupérer le token à partir des préférences partagées
-    String? token = Constants.token ;
+    final String token = Constants.token;
 
-    // Build request options including the bearer token if necessary
     Map<String, String> headers = {
       'Content-Type': contentType,
       accept: applicationJson,
     };
 
-    // Construire les options de requête en incluant le bearer token si nécessaire
-    if (includeBearerToken && (token?.isNotEmpty ?? false)) {
+    if (includeBearerToken && token.isNotEmpty) {
       headers[authorization] = 'Bearer $token';
     }
     return Options(headers: headers);

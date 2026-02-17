@@ -376,4 +376,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get check_your_connection => 'Check your connection and try again';
+
+  @override
+  String get check_permissions => 'Check Permissions';
+
+  @override
+  String get check_permissions_status => 'Check permissions status';
+
+  @override
+  String get permissions_granted => 'Permissions granted';
+
+  @override
+  String get permissions_missing => 'Permissions missing';
+
+  @override
+  String get permissions_granted_now => 'Permissions granted now';
+
+  @override
+  String get permissions_still_denied => 'Permissions still denied';
+
+  @override
+  String error_occurred(String error) {
+    return 'Error: $error';
+  }
 }

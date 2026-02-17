@@ -42,7 +42,7 @@ class WatchlistHomeWidget extends StatelessWidget {
                     Text(
                       AppLocalizations.of(context)?.coming_up_in_watchlist ?? 'Coming Up in Watchlist',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -111,16 +111,16 @@ class WatchlistHomeWidget extends StatelessWidget {
                         fit: BoxFit.cover,
                         width: double.infinity,
                         placeholder: (context, url) => Container(
-                          color: Theme.of(context).colorScheme.surfaceVariant,
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
                           child: Center(child: mainCircularProgress()),
                         ),
                         errorWidget: (context, url, error) => Container(
-                          color: Theme.of(context).colorScheme.surfaceVariant,
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
                           child: Icon(Icons.photo_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 40),
                         ),
                       )
                     : Container(
-                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         child: Icon(Icons.photo_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 40),
                       ),
               ),
@@ -132,7 +132,7 @@ class WatchlistHomeWidget extends StatelessWidget {
             Text(
               item.title,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onBackground,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
@@ -153,7 +153,7 @@ class WatchlistHomeWidget extends StatelessWidget {
               ),
               child: Text(
                 daysUntil == 0 
-                    ? 'Today!' 
+                    ? AppLocalizations.of(context)?.today ?? 'Today!' 
                     : daysUntil == 1 
                         ? AppLocalizations.of(context)?.tomorrow ?? 'Tomorrow' 
                         : displayDate,

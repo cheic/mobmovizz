@@ -21,7 +21,7 @@ class MovieGenresBloc extends Bloc<MovieGenresEvent, MovieGenresState> {
     final Either<Failure, MovieGenresListModel> failureOrGenres =
         await movieGenresService.getMovieGenres();
     emit(failureOrGenres.fold(
-        (failure) => MovieGenresError(failure.message ?? "Some error occured when fetching genres"),
+        (failure) => MovieGenresError(failure.message ?? "Some error occurred when fetching genres"),
         (datas) => MovieGenresLoaded(datas)));
   }
 }

@@ -44,7 +44,7 @@ class FilterDialog extends StatefulWidget {
       context: context,
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withOpacity(0.5), // Valeur par défaut, sera adaptée dynamiquement
+      barrierColor: Colors.black.withValues(alpha: 0.5), // Valeur par défaut, sera adaptée dynamiquement
       transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (context, animation, secondaryAnimation) {
         // Envelopper le dialog dans un BlocBuilder pour réagir aux changements de thème
@@ -56,8 +56,8 @@ class FilterDialog extends StatefulWidget {
             
             return Container(
               color: isLightMode 
-                  ? Colors.black.withOpacity(0.3)  // Plus clair en mode clair
-                  : Colors.black.withOpacity(0.6), // Plus sombre en mode sombre
+                  ? Colors.black.withValues(alpha: 0.3)  // Plus clair en mode clair
+                  : Colors.black.withValues(alpha: 0.6), // Plus sombre en mode sombre
               child: FilterDialog(
                 sortOptions: sortOptions,
                 initialSort: initialSort,
@@ -149,13 +149,13 @@ class _FilterDialogState extends State<FilterDialog> {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
             ],
             border: Border.all(
-              color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
               width: 1,
             ),
           ),
@@ -167,7 +167,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -207,7 +207,7 @@ class _FilterDialogState extends State<FilterDialog> {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: accentColor.withOpacity(0.2),
+            color: accentColor.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
@@ -230,7 +230,7 @@ class _FilterDialogState extends State<FilterDialog> {
           onPressed: () => Navigator.of(context).pop(),
           icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface),
           style: IconButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
+            backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -247,7 +247,7 @@ class _FilterDialogState extends State<FilterDialog> {
         color: getSecondaryColor(themeState, context),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -279,12 +279,11 @@ class _FilterDialogState extends State<FilterDialog> {
               color: getBackgroundColor(themeState, context),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
-            child: DropdownButton<String>(
-              value: _selectedSort,
+            child: DropdownButton<String>(              value: _selectedSort,
               isExpanded: true,
               underline: const SizedBox(),
               dropdownColor: getSecondaryColor(themeState, context),
@@ -320,7 +319,7 @@ class _FilterDialogState extends State<FilterDialog> {
         color: getSecondaryColor(themeState, context),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -358,13 +357,13 @@ class _FilterDialogState extends State<FilterDialog> {
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: _selectedYear == null 
-            ? accentColor.withOpacity(0.2)
+            ? accentColor.withValues(alpha: 0.2)
             : getBackgroundColor(themeState, context),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: _selectedYear == null 
               ? accentColor
-              : Theme.of(context).colorScheme.outline.withOpacity(0.3),
+              : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
           width: 1.5,
         ),
       ),
@@ -387,11 +386,11 @@ class _FilterDialogState extends State<FilterDialog> {
                 groupValue: _selectedYear,
                 activeColor: accentColor,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                fillColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.selected)) {
+                fillColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
                     return accentColor;
                   }
-                  return Theme.of(context).colorScheme.onSurface.withOpacity(0.6);
+                  return Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
                 }),
                 onChanged: (int? value) {
                   setState(() {
@@ -430,7 +429,7 @@ class _FilterDialogState extends State<FilterDialog> {
           color: getSecondaryColor(themeState, context),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -450,7 +449,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 ),
                 decoration: BoxDecoration(
                   color: isSelected 
-                      ? accentColor.withOpacity(0.2)
+                      ? accentColor.withValues(alpha: 0.2)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(10),
                   border: isSelected 
@@ -476,11 +475,11 @@ class _FilterDialogState extends State<FilterDialog> {
                           groupValue: _selectedYear,
                           activeColor: accentColor,
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          fillColor: MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.selected)) {
+                          fillColor: WidgetStateProperty.resolveWith((states) {
+                            if (states.contains(WidgetState.selected)) {
                               return accentColor;
                             }
-                            return Theme.of(context).colorScheme.onSurface.withOpacity(0.6);
+                            return Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
                           }),
                           onChanged: (int? value) {
                             setState(() {
@@ -535,7 +534,7 @@ class _FilterDialogState extends State<FilterDialog> {
               },
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                side: BorderSide(color: Colors.red.withOpacity(0.5)),
+                side: BorderSide(color: Colors.red.withValues(alpha: 0.5)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -559,7 +558,7 @@ class _FilterDialogState extends State<FilterDialog> {
             },
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              side: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.5)),
+              side: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -567,7 +566,7 @@ class _FilterDialogState extends State<FilterDialog> {
             child: Text(
               AppLocalizations.of(context)?.cancel ?? 'Annuler',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),

@@ -141,11 +141,11 @@ class _SearchMovieView extends State<SearchMovieView> {
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context)?.search_for_movies ?? 'Search for movies...',
-                hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6), fontSize: 16),
-                prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 16),
+                prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                        icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                        icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
                         onPressed: () {
                           _searchController.clear();
                         },
@@ -208,7 +208,7 @@ class _SearchMovieView extends State<SearchMovieView> {
                                     color: Theme.of(context).colorScheme.surfaceContainer,
                                     child: Icon(
                                       Icons.image_outlined,
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                                       size: 50,
                                     ),
                                   )
@@ -226,7 +226,7 @@ class _SearchMovieView extends State<SearchMovieView> {
                                       color: Theme.of(context).colorScheme.surfaceContainer,
                                       child: Icon(
                                         Icons.image_outlined,
-                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                                         size: 50,
                                       ),
                                     )),
@@ -262,7 +262,36 @@ class _SearchMovieView extends State<SearchMovieView> {
                     );
                   }
                 } else if (state is SearchMovieError) {
-                  return Center(child: Text('Error: ${state.message}'));
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline_rounded,
+                          size: 80,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Oups !',
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                          child: Text(
+                            state.message,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 }
                 return Container();
               },

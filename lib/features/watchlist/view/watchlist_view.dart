@@ -43,7 +43,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                     Icon(
                       Icons.bookmark_border,
                       size: 64,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                     SizedBox(height: 16),
                     Text(
@@ -56,7 +56,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                     Text(
                       AppLocalizations.of(context)?.add_movies_you_want_to_watch_later ?? "Add movies you want to watch later",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -154,7 +154,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                             color: Theme.of(context).colorScheme.surfaceContainer,
                             child: Icon(
                               Icons.photo_outlined,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                             ),
                           ),
                         )
@@ -162,7 +162,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                           color: Theme.of(context).colorScheme.surfaceContainer,
                           child: Icon(
                             Icons.photo_outlined,
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                           ),
                         ),
                 ),
@@ -193,13 +193,13 @@ class _WatchlistViewState extends State<WatchlistView> {
                         Icon(
                           Icons.calendar_today,
                           size: 16,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         SizedBox(width: 4),
                         Text(
                           '${AppLocalizations.of(context)?.release_label ?? 'Release'}: ${DateFormatter.formatReleaseDate(item.releaseDate, context)}',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                           ),
                         ),
                       ],
@@ -213,13 +213,13 @@ class _WatchlistViewState extends State<WatchlistView> {
                         Icon(
                           Icons.bookmark_add,
                           size: 16,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         SizedBox(width: 4),
                         Text(
                           '${AppLocalizations.of(context)?.added_label ?? 'Added'}: ${DateFormatter.formatDateTime(item.addedDate, context)}',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                           ),
                         ),
                       ],
@@ -232,13 +232,13 @@ class _WatchlistViewState extends State<WatchlistView> {
                           Icon(
                             isUpcoming ? Icons.alarm : Icons.alarm_off,
                             size: 16,
-                            color: isUpcoming ? royalBlueDerived : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                            color: isUpcoming ? royalBlueDerived : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                           SizedBox(width: 4),
                           Text(
                             '${AppLocalizations.of(context)?.reminder_label ?? 'Reminder'}: ${DateFormatter.formatDateTime(item.reminderDate, context)}',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: isUpcoming ? royalBlueDerived : Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                              color: isUpcoming ? royalBlueDerived : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                             ),
                           ),
                         ],
@@ -332,7 +332,7 @@ class _WatchlistViewState extends State<WatchlistView> {
             children: [
               Text(
                 '${l10n.set_reminder_for} "${item.title}"',
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8)),
               ),
               SizedBox(height: 20),
               
@@ -438,7 +438,7 @@ class _WatchlistViewState extends State<WatchlistView> {
               onPressed: () => Navigator.of(dialogContext).pop(),
               child: Text(
                 l10n.cancel,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
               ),
             ),
             ElevatedButton(
@@ -492,21 +492,21 @@ class _WatchlistViewState extends State<WatchlistView> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: Color(0xFF1E1E1E),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(
           AppLocalizations.of(context)?.remove_from_watchlist_title ?? 'Remove from Watchlist',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
         content: Text(
-          'Are you sure you want to remove "${item.title}" from your watchlist?',
-          style: TextStyle(color: Colors.grey[300]),
+          '${AppLocalizations.of(context)?.remove_from_watchlist ?? "Remove"} "${item.title}" ?',
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
             child: Text(
               AppLocalizations.of(context)?.cancel ?? 'Cancel',
-              style: TextStyle(color: Colors.grey[300]),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
             ),
           ),
           ElevatedButton(
@@ -515,8 +515,8 @@ class _WatchlistViewState extends State<WatchlistView> {
               Navigator.of(dialogContext).pop();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
             ),
             child: Text(AppLocalizations.of(context)?.remove ?? 'Remove'),
           ),
