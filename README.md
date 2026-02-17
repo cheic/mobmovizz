@@ -1,5 +1,7 @@
 # 🎬 MobMovizz
+# 🎬 MobMovizz
 
+**MobMovizz** est une application mobile Flutter permettant de découvrir, rechercher et gérer un catalogue de films. L'application offre une expérience utilisateur moderne avec un design Material 3, des animations fluides et une gestion complète des films.
 **MobMovizz** est une application mobile Flutter permettant de découvrir, rechercher et gérer un catalogue de films. L'application offre une expérience utilisateur moderne avec un design Material 3, des animations fluides et une gestion complète des films.
 
 ## 📋 Table des matières
