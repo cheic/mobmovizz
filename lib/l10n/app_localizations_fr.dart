@@ -379,4 +379,27 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get check_your_connection => 'Vérifiez votre connexion et réessayez';
+
+  @override
+  String get check_permissions => 'Vérifier Permissions';
+
+  @override
+  String get check_permissions_status => 'Vérifier l\'état des permissions';
+
+  @override
+  String get permissions_granted => 'Permissions accordées';
+
+  @override
+  String get permissions_missing => 'Permissions manquantes';
+
+  @override
+  String get permissions_granted_now => 'Permissions accordées maintenant';
+
+  @override
+  String get permissions_still_denied => 'Permissions toujours refusées';
+
+  @override
+  String error_occurred(String error) {
+    return 'Erreur: $error';
+  }
 }

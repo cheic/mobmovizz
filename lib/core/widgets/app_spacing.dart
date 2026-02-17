@@ -131,7 +131,7 @@ class AppDecoration {
     borderRadius: AppBorderRadius.medium,
     boxShadow: [
       BoxShadow(
-        color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
         blurRadius: AppDimensions.cardElevation,
         offset: const Offset(0, 2),
       ),
@@ -143,7 +143,7 @@ class AppDecoration {
     borderRadius: AppBorderRadius.medium,
     boxShadow: [
       BoxShadow(
-        color: Theme.of(context).colorScheme.shadow.withOpacity(0.15),
+        color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.15),
         blurRadius: AppDimensions.cardElevationHigh,
         offset: const Offset(0, 4),
       ),

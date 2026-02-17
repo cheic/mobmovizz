@@ -136,5 +136,19 @@
   "filter_by_year": "Filtrer par année",
   "all_years": "Toutes les années",
   "no_internet_connection": "Pas de connexion internet",
-  "check_your_connection": "Vérifiez votre connexion et réessayez"
+  "check_your_connection": "Vérifiez votre connexion et réessayez",
+  "check_permissions": "Vérifier Permissions",
+  "check_permissions_status": "Vérifier l'état des permissions",
+  "permissions_granted": "Permissions accordées",
+  "permissions_missing": "Permissions manquantes",
+  "permissions_granted_now": "Permissions accordées maintenant",
+  "permissions_still_denied": "Permissions toujours refusées",
+  "error_occurred": "Erreur: {error}",
+  "@error_occurred": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

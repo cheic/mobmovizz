@@ -91,10 +91,10 @@ class _NoInternetConnectionWidgetState extends State<NoInternetConnectionWidget>
                       child: Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.errorContainer.withOpacity(0.1),
+                          color: theme.colorScheme.errorContainer.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: theme.colorScheme.error.withOpacity(0.3),
+                            color: theme.colorScheme.error.withValues(alpha: 0.3),
                             width: 2,
                           ),
                         ),
@@ -129,7 +129,7 @@ class _NoInternetConnectionWidgetState extends State<NoInternetConnectionWidget>
           Text(
             localizations?.check_your_connection ?? 'Vérifiez votre connexion et réessayez',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
             textAlign: TextAlign.center,
           ),
@@ -223,10 +223,10 @@ class _CompactNoInternetWidgetState extends State<CompactNoInternetWidget>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: theme.colorScheme.errorContainer.withOpacity(0.8),
+          color: theme.colorScheme.errorContainer.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: theme.colorScheme.error.withOpacity(0.5),
+            color: theme.colorScheme.error.withValues(alpha: 0.5),
             width: 1,
           ),
         ),

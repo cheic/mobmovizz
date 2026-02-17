@@ -72,7 +72,14 @@ class UpcomingWidget extends StatelessWidget {
               ],
             );
           } else if (state is UpcomingsError) {
-            return Text('Error: ${state.message}');
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, size: 20, color: Theme.of(context).colorScheme.error),
+                const SizedBox(width: 8),
+                Flexible(child: Text(state.message, overflow: TextOverflow.ellipsis)),
+              ],
+            );
           } else {
             return Text('Loading upcoming movies...');
           }

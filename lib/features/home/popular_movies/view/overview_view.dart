@@ -13,6 +13,7 @@ import 'package:mobmovizz/core/widgets/watchlist_home_widget.dart';
 import 'package:mobmovizz/features/home/popular_movies/bloc/popular_movies_bloc.dart';
 import 'package:mobmovizz/features/home/top_rated/view/top_rated_view.dart';
 import 'package:mobmovizz/features/home/upcomings/view/upcomings_view.dart';
+import 'package:mobmovizz/features/movie_details/view/movie_details_view.dart';
 import 'package:mobmovizz/l10n/app_localizations.dart';
 
 class DiscoverView extends StatefulWidget {
@@ -141,41 +142,57 @@ class _DiscoverViewState extends State<DiscoverView> {
             itemCount: state.popularMovieModel.results.length,
             itemBuilder: (context, index) {
               final movie = state.popularMovieModel.results[index];
-              return Stack(
-                children: [
-                  CachedNetworkImage(
-                    progressIndicatorBuilder:
-                        (context, url, progress) => Center(
-                      child: mainCircularProgress(
-                        value: progress.progress,
+              final posterPath = movie.posterPath;
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MovieDetailsView(movieId: movie.id),
+                    ),
+                  );
+                },
+                child: Stack(
+                  children: [
+                    if (posterPath != null && posterPath.isNotEmpty)
+                      CachedNetworkImage(
+                        progressIndicatorBuilder:
+                            (context, url, progress) => Center(
+                          child: mainCircularProgress(
+                            value: progress.progress,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => ImageErrorWidget(
+                          url: url,
+                          width: double.infinity,
+                        ),
+                        imageUrl:
+                            'https://image.tmdb.org/t/p/w500$posterPath',
+                        width: double.infinity,
+                        fit: BoxFit.fill,
+                      )
+                    else
+                      ImageErrorWidget(
+                        url: '',
+                        width: double.infinity,
                       ),
-                    ),
-                    errorWidget: (context, url, error) => ImageErrorWidget(
-                      url: url,
-                      width: double.infinity,
-                    ),
-                    imageUrl:
-                        'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-                    width: double.infinity,
-                    fit: BoxFit.fill,
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: <Color>[
-                            surfaceDim.withAlpha(255),
-                            surfaceDim.withAlpha(50),
-                            surfaceDim.withAlpha(0),
-                          ],
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: <Color>[
+                              surfaceDim.withAlpha(255),
+                              surfaceDim.withAlpha(50),
+                              surfaceDim.withAlpha(0),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               );
             },
             onPageChanged: (int page) {
@@ -252,7 +269,7 @@ class _DiscoverViewState extends State<DiscoverView> {
           shape: BoxShape.circle,
           color: isActive
               ? royalBlueDerived
-              : const Color(0XFFEAEAEA).withAlpha(80),
+              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
         ),
       ),
     );

@@ -304,7 +304,7 @@ Push sur main → Tests → Build APK signé → Artefact
 
 | Secret | Description |
 |--------|-------------|
-| `KEYSTORE_BASE64` | Fichier keystore encodé en base64 |
+| `MOBMOVIZZ_KEYSTORE` | Fichier keystore encodé en base64 |
 | `KEYSTORE_PASSWORD` | Mot de passe du keystore |
 | `KEY_ALIAS` | Alias de la clé de signature |
 | `KEY_PASSWORD` | Mot de passe de la clé |

@@ -38,15 +38,15 @@ class PopularMovieModel {
 
 class Result {
     bool adult;
-    String backdropPath;
+    String? backdropPath;
     List<int> genreIds;
     int id;
-    OriginalLanguage? originalLanguage;
+    String? originalLanguage;
     String originalTitle;
     String overview;
     double popularity;
-    String posterPath;
-    DateTime releaseDate;
+    String? posterPath;
+    DateTime? releaseDate;
     String title;
     bool video;
     double voteAverage;
@@ -54,15 +54,15 @@ class Result {
 
     Result({
         required this.adult,
-        required this.backdropPath,
+        this.backdropPath,
         required this.genreIds,
         required this.id,
-        required this.originalLanguage,
+        this.originalLanguage,
         required this.originalTitle,
         required this.overview,
         required this.popularity,
-        required this.posterPath,
-        required this.releaseDate,
+        this.posterPath,
+        this.releaseDate,
         required this.title,
         required this.video,
         required this.voteAverage,
@@ -70,20 +70,24 @@ class Result {
     });
 
     factory Result.fromJson(Map<String, dynamic> json) => Result(
-        adult: json["adult"],
+        adult: json["adult"] ?? false,
         backdropPath: json["backdrop_path"],
-        genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
+        genreIds: json["genre_ids"] != null
+            ? List<int>.from(json["genre_ids"].map((x) => x))
+            : [],
         id: json["id"],
-        originalLanguage: originalLanguageValues.map[json["original_language"]],
-        originalTitle: json["original_title"],
-        overview: json["overview"],
-        popularity: json["popularity"].toDouble(),
+        originalLanguage: json["original_language"],
+        originalTitle: json["original_title"] ?? '',
+        overview: json["overview"] ?? '',
+        popularity: (json["popularity"] as num?)?.toDouble() ?? 0.0,
         posterPath: json["poster_path"],
-        releaseDate: DateTime.parse(json["release_date"]),
-        title: json["title"],
-        video: json["video"],
-        voteAverage: json["vote_average"].toDouble(),
-        voteCount: json["vote_count"],
+        releaseDate: json["release_date"] != null && json["release_date"].toString().isNotEmpty
+            ? DateTime.tryParse(json["release_date"])
+            : null,
+        title: json["title"] ?? '',
+        video: json["video"] ?? false,
+        voteAverage: (json["vote_average"] as num?)?.toDouble() ?? 0.0,
+        voteCount: json["vote_count"] ?? 0,
     );
 
     Map<String, dynamic> toJson() => {
@@ -91,39 +95,17 @@ class Result {
         "backdrop_path": backdropPath,
         "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
         "id": id,
-        "original_language": originalLanguageValues.reverse[originalLanguage],
+        "original_language": originalLanguage,
         "original_title": originalTitle,
         "overview": overview,
         "popularity": popularity,
         "poster_path": posterPath,
-        "release_date": "${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}",
+        "release_date": releaseDate != null
+            ? "${releaseDate!.year.toString().padLeft(4, '0')}-${releaseDate!.month.toString().padLeft(2, '0')}-${releaseDate!.day.toString().padLeft(2, '0')}"
+            : null,
         "title": title,
         "video": video,
         "vote_average": voteAverage,
         "vote_count": voteCount,
     };
-}
-
-enum OriginalLanguage {
-    EN,
-    ES,
-    ZH
-}
-
-final originalLanguageValues = EnumValues({
-    "en": OriginalLanguage.EN,
-    "es": OriginalLanguage.ES,
-    "zh": OriginalLanguage.ZH
-});
-
-class EnumValues<T> {
-    Map<String, T> map;
-    late Map<T, String> reverseMap;
-
-    EnumValues(this.map);
-
-    Map<T, String> get reverse {
-            reverseMap = map.map((k, v) => MapEntry(v, k));
-            return reverseMap;
-    }
 }

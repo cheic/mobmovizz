@@ -187,22 +187,4 @@ class _AddToWatchlistDialogState extends State<AddToWatchlistDialog> {
       ],
     );
   }
-
-  static void show({
-    required BuildContext context,
-    required int movieId,
-    required String title,
-    String? posterPath,
-    String? releaseDate,
-  }) {
-    showDialog(
-      context: context,
-      builder: (context) => AddToWatchlistDialog(
-        movieId: movieId,
-        title: title,
-        posterPath: posterPath,
-        releaseDate: releaseDate,
-      ),
-    );
-  }
 }

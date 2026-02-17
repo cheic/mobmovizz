@@ -54,27 +54,38 @@ Widget buildMovieListItem(BuildContext context, dynamic movie) {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: CachedNetworkImage(
-                    width: 120, // Adjust width as needed
-                    height: 180, // Match the parent container height
-                    imageUrl:
-                        'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-                    fit: BoxFit.fill,
-                    placeholder: (context, url) => Center(
-                        child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: mainCircularProgress(),
-                    )),
-                    errorWidget: (context, url, error) => Container(
-                      color: Theme.of(context).colorScheme.surfaceContainer,
-                      child: Icon(
-                        Icons.photo_outlined,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        size: 50,
-                      ),
-                    ),
-                  ),
+                  child: (movie.posterPath != null && movie.posterPath!.isNotEmpty)
+                      ? CachedNetworkImage(
+                          width: 120, // Adjust width as needed
+                          height: 180, // Match the parent container height
+                          imageUrl:
+                              'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                          fit: BoxFit.fill,
+                          placeholder: (context, url) => Center(
+                              child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: mainCircularProgress(),
+                          )),
+                          errorWidget: (context, url, error) => Container(
+                            color: Theme.of(context).colorScheme.surfaceContainer,
+                            child: Icon(
+                              Icons.photo_outlined,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              size: 50,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          width: 120,
+                          height: 180,
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          child: Icon(
+                            Icons.photo_outlined,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            size: 50,
+                          ),
+                        ),
                 ),
               ),
               Expanded(
@@ -105,7 +116,7 @@ Widget buildMovieListItem(BuildContext context, dynamic movie) {
                         '${AppLocalizations.of(context)?.release_label ?? 'Release'}: ${DateFormatter.formatReleaseDate(movie.releaseDate, context)}',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                         ),
                       ),
                     ],

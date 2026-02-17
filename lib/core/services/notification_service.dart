@@ -178,7 +178,7 @@ class NotificationService {
         payload: 'test',
       );
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -241,7 +241,7 @@ class NotificationService {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 

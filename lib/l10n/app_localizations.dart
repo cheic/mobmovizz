@@ -805,6 +805,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Check your connection and try again'**
   String get check_your_connection;
+
+  /// No description provided for @check_permissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Permissions'**
+  String get check_permissions;
+
+  /// No description provided for @check_permissions_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Check permissions status'**
+  String get check_permissions_status;
+
+  /// No description provided for @permissions_granted.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions granted'**
+  String get permissions_granted;
+
+  /// No description provided for @permissions_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions missing'**
+  String get permissions_missing;
+
+  /// No description provided for @permissions_granted_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions granted now'**
+  String get permissions_granted_now;
+
+  /// No description provided for @permissions_still_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions still denied'**
+  String get permissions_still_denied;
+
+  /// No description provided for @error_occurred.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String error_occurred(String error);
 }
 
 class _AppLocalizationsDelegate
