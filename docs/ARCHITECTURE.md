@@ -80,7 +80,7 @@ Contient les modules transversaux utilisés par l'ensemble de l'application :
 | `services/` | Services métier | `notification_service.dart`, `localization_service.dart` |
 | `utils/` | Utilitaires | `date_formatter.dart`, `currency_formatter.dart` |
 | `widgets/` | Widgets réutilisables | `state_widgets.dart`, `error_handler_widget.dart` |
-| `common/` | Composants communs | `app_dimensions.dart`, `button_tab.dart` |
+| `common/` | Composants communs | `app_dimensions.dart`, `common_header.dart` |
 
 ### 2. Couche Features (`lib/features/`)
 
@@ -293,7 +293,7 @@ Types d'erreurs (`lib/core/error/failure.dart`) :
 
 ### Structure de navigation
 
-L'application utilise un `IndexedStack` avec une barre de navigation animée Rive :
+L'application utilise un `IndexedStack` avec une barre de navigation **Material 3 NavigationBar** :
 
 ```
 ┌──────────────────────────────────────┐
@@ -305,7 +305,7 @@ L'application utilise un `IndexedStack` avec une barre de navigation animée Riv
 │  │  [3] Watchlist                │  │
 │  └────────────────────────────────┘  │
 ├──────────────────────────────────────┤
-│       RiveBottomNavBar (4 tabs)      │
+│    Material 3 NavigationBar (4)      │
 │    🏠  🎭  🔍  💾                    │
 └──────────────────────────────────────┘
 ```
@@ -322,9 +322,9 @@ class NavigationCubit extends Cubit<NavigationState> {
 }
 ```
 
-### Animations Rive
+### Material 3 NavigationBar
 
-La barre de navigation utilise des animations vectorielles Rive pour une expérience utilisateur fluide et interactive.
+La barre de navigation utilise le composant natif `NavigationBar` de Material 3, stylisé via `NavigationBarThemeData` dans le thème de l'application pour une intégration visuelle cohérente.
 
 ## Thèmes et design
 
@@ -339,9 +339,12 @@ L'application utilise le système de design Material 3 avec deux thèmes :
 
 | Couleur | Hex | Usage |
 |---------|-----|-------|
-| Royal Blue | `#4169E1` | Couleur primaire |
-| Surface Dim | `#111318` | Fond sombre |
-| Snow | `#FFFAFA` | Fond clair |
+| Royal Blue | `#3B6FED` | Couleur primaire |
+| Royal Blue Derived | `#5B8AF5` | Variante primaire |
+| Accent Amber | `#FFB81C` | Couleur d'accentuation |
+| Surface Dim | `#0D1117` | Fond sombre |
+| Lotion | `#F6F8FA` | Fond clair |
+| Snow | `#F0F3F6` | Surface claire secondaire |
 
 ### ThemeBloc
 
@@ -354,7 +357,7 @@ ThemeBloc → ThemeState(themeMode) → ThemeMode.system/light/dark
 
 ### Typographie
 
-Les polices sont chargées dynamiquement via Google Fonts pour une typographie moderne et personnalisée.
+L'application utilise la police **Plus Jakarta Sans** chargée via Google Fonts, appliquée à l'ensemble du `TextTheme` pour une typographie moderne et premium.
 
 ## Gestion des erreurs
 
@@ -372,7 +375,13 @@ L'application dispose de widgets dédiés pour chaque état :
 
 ### ErrorHandlerWidget
 
-Widget intelligent qui détecte le type d'erreur (réseau, serveur, générique) et affiche le message approprié.
+Widget intelligent qui détecte le type d'erreur (réseau, serveur, générique) et affiche le message approprié. Utilisé de manière cohérente dans toutes les pages (Genres, Recherche, etc.).
+
+### Stratégie d'erreur par section
+
+Sur la page d'accueil, les erreurs sont gérées de manière hiérarchique :
+- **Erreur principale** (Popular Movies) : affiche un `ErrorHandlerWidget` en plein écran au niveau du `body`
+- **Erreurs secondaires** (TopRated, Upcoming) : retournent `SizedBox.shrink()` pour ne pas bloquer l'affichage
 
 ### SectionErrorWrapper
 

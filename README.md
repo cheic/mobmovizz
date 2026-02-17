@@ -23,7 +23,7 @@
 
 | Fonctionnalité | Description |
 |---|---|
-| 🏠 **Accueil** | Films populaires, à venir et mieux notés avec carrousel interactif |
+| 🏠 **Accueil** | Films populaires en carrousel héro, films à venir et mieux notés |
 | 🎭 **Genres** | Parcourir les films par genre avec filtres et tri |
 | 🔍 **Recherche** | Recherche textuelle de films en temps réel |
 | 💾 **Watchlist** | Ajouter et gérer une liste de films à regarder |
@@ -55,9 +55,8 @@
 
 ### Interface utilisateur
 - **carousel_slider_plus** — Carrousels interactifs
-- **rive** — Animations vectorielles (barre de navigation)
 - **cached_network_image** — Gestion optimisée des images
-- **google_fonts** — Typographie personnalisée
+- **google_fonts** — Typographie Plus Jakarta Sans
 - **flutter_platform_widgets** — Widgets adaptatifs iOS/Android
 
 ### Fonctionnalités
@@ -228,13 +227,13 @@ lib/
 │   │   ├── currency_formatter.dart  # Formatage des devises
 │   │   └── rating.dart              # Affichage des notes
 │   ├── widgets/                     # Widgets réutilisables
-│   │   ├── navigation/             # Barre de navigation Rive
+│   │   ├── navigation/             # Navigation Material 3
 │   │   ├── error_handler_widget.dart
 │   │   ├── state_widgets.dart
 │   │   └── ...
 │   └── common/                      # Composants communs
 │       ├── app_dimensions.dart      # Espacements Material 3
-│       └── button_tab.dart          # Onglets personnalisés
+│       └── common_header.dart       # En-têtes de section
 │
 ├── features/                        # Fonctionnalités métier
 │   ├── home/                        # Écran d'accueil
@@ -252,13 +251,10 @@ lib/
 │   ├── watchlist/                   # Liste de surveillance
 │   └── favorites/                   # Films favoris
 │
-├── widgets/                         # Widgets spécifiques
-│   └── home_widgets/               # Widgets de l'accueil
-│
-└── l10n/                            # Fichiers de localisation
-    ├── app_en.arb                   # Traductions anglaises
-    ├── app_fr.arb                   # Traductions françaises
-    └── app_localizations.dart       # Classes générées
+├── l10n/                            # Fichiers de localisation
+│   ├── app_en.arb                   # Traductions anglaises
+│   ├── app_fr.arb                   # Traductions françaises
+│   └── app_localizations.dart       # Classes générées
 ```
 
 ## 🧪 Tests
@@ -292,13 +288,13 @@ Le projet utilise **GitHub Actions** pour l'intégration et le déploiement cont
 ### Pipeline
 
 ```
-Push sur main → Tests → Build APK signé → Artefact
+Push sur main → Tests → Build App Bundle signé → Artefact
 ```
 
 ### Jobs
 
 1. **Build & Test** — Exécute `flutter test` sur Ubuntu
-2. **Build & Release Android** — Compile et signe l'APK de production
+2. **Build & Release Android** — Compile et signe l'App Bundle (`.aab`) de production
 
 ### Secrets requis
 
@@ -330,13 +326,13 @@ base64 -i /chemin/vers/votre/mobmovizz.jks | tr -d '\n'
 
 1. Accédez à votre dépôt GitHub → **Settings** → **Secrets and variables** → **Actions**
 2. Cliquez sur **New repository secret** et ajoutez chaque secret :
-   - `KEYSTORE_BASE64` : collez la sortie de la commande `base64` ci-dessus
+   - `MOBMOVIZZ_KEYSTORE` : collez la sortie de la commande `base64` ci-dessus
    - `KEYSTORE_PASSWORD` : le mot de passe de votre keystore
    - `KEY_ALIAS` : l'alias de votre clé (ex. `votre_alias`)
    - `KEY_PASSWORD` : le mot de passe de votre clé
    - `TMDB_TOKEN` : votre Bearer Token TMDB
 
-> ⚠️ **Important** : Ne stockez jamais le fichier `.jks` dans le dépôt Git. Le pipeline CI/CD décode automatiquement le secret `KEYSTORE_BASE64` pour recréer le fichier keystore lors du build.
+> ⚠️ **Important** : Ne stockez jamais le fichier `.jks` dans le dépôt Git. Le pipeline CI/CD décode automatiquement le secret `MOBMOVIZZ_KEYSTORE` pour recréer le fichier keystore lors du build.
 
 ## 🌐 Localisation
 

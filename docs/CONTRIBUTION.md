@@ -175,7 +175,7 @@ flutter analyze
 flutter test
 
 # S'assurer que le build passe
-flutter build apk --debug
+flutter build appbundle --debug
 ```
 
 ### 4. Soumettre la PR

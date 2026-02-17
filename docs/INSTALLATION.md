@@ -182,7 +182,7 @@ Accédez à votre dépôt GitHub → **Settings** → **Secrets and variables** 
 
 | Secret | Valeur |
 |--------|--------|
-| `KEYSTORE_BASE64` | La sortie base64 de l'étape 1 |
+| `MOBMOVIZZ_KEYSTORE` | La sortie base64 de l'étape 1 |
 | `KEYSTORE_PASSWORD` | Le mot de passe de votre keystore |
 | `KEY_ALIAS` | L'alias de votre clé (ex. `votre_alias`) |
 | `KEY_PASSWORD` | Le mot de passe de votre clé |
@@ -192,10 +192,10 @@ Accédez à votre dépôt GitHub → **Settings** → **Secrets and variables** 
 
 Poussez un commit sur la branche `main`. Le pipeline CI/CD :
 1. Exécutera les tests
-2. Décodera automatiquement le keystore depuis le secret `KEYSTORE_BASE64`
+2. Décodera automatiquement le keystore depuis le secret `MOBMOVIZZ_KEYSTORE`
 3. Créera le fichier `key.properties` avec les informations de signature
-4. Compilera et signera l'APK de production
-5. Mettra l'APK disponible en tant qu'artefact du workflow
+4. Compilera et signera l'App Bundle (`.aab`) de production
+5. Mettra l'App Bundle disponible en tant qu'artefact du workflow
 
 > ⚠️ **Sécurité** : Ne commitez jamais votre fichier `.jks` ou `key.properties` dans le dépôt. Le fichier `.gitignore` est déjà configuré pour les exclure.
 
@@ -238,8 +238,8 @@ flutter test
 ### Vérifier la compilation
 
 ```bash
-# Android
-flutter build apk --debug
+# Android (App Bundle)
+flutter build appbundle --debug
 
 # iOS (macOS uniquement)
 flutter build ios --debug --no-codesign
