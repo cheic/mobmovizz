@@ -163,6 +163,42 @@ keyPassword=votre_mot_de_passe_cle
 
 > ⚠️ Ces fichiers sont exclus du contrôle de version via `.gitignore`.
 
+### Configuration du keystore pour le CI/CD
+
+Pour que le pipeline GitHub Actions puisse signer l'APK automatiquement, vous devez stocker votre keystore en tant que secret GitHub encodé en base64.
+
+#### Étape 1 — Encoder le keystore en base64
+
+```bash
+# macOS / Linux
+base64 -i /chemin/vers/votre/mobmovizz.jks | tr -d '\n'
+```
+
+Copiez la sortie complète de cette commande.
+
+#### Étape 2 — Ajouter les secrets dans GitHub
+
+Accédez à votre dépôt GitHub → **Settings** → **Secrets and variables** → **Actions**, puis ajoutez les secrets suivants :
+
+| Secret | Valeur |
+|--------|--------|
+| `KEYSTORE_BASE64` | La sortie base64 de l'étape 1 |
+| `KEYSTORE_PASSWORD` | Le mot de passe de votre keystore |
+| `KEY_ALIAS` | L'alias de votre clé (ex. `votre_alias`) |
+| `KEY_PASSWORD` | Le mot de passe de votre clé |
+| `TMDB_TOKEN` | Votre Bearer Token API TMDB |
+
+#### Étape 3 — Vérification
+
+Poussez un commit sur la branche `main`. Le pipeline CI/CD :
+1. Exécutera les tests
+2. Décodera automatiquement le keystore depuis le secret `KEYSTORE_BASE64`
+3. Créera le fichier `key.properties` avec les informations de signature
+4. Compilera et signera l'APK de production
+5. Mettra l'APK disponible en tant qu'artefact du workflow
+
+> ⚠️ **Sécurité** : Ne commitez jamais votre fichier `.jks` ou `key.properties` dans le dépôt. Le fichier `.gitignore` est déjà configuré pour les exclure.
+
 ## Configuration iOS
 
 > Note : La configuration iOS nécessite un Mac avec Xcode installé.
