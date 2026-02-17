@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build_and_test:
@@ -23,14 +26,10 @@ jobs:
           flutter-version: '3.x'
       - name: Get dependencies
         run: flutter pub get
-      - name: Configure API constants
-        if: ${{ env.TMDB_TOKEN != '' }}
-        env:
-          TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
-        run: |
-          sed -i "s|static const String token = '';|static const String token = '$TMDB_TOKEN';|" lib/core/utils/constants.dart
+      - name: Analyze code
+        run: flutter analyze --no-fatal-infos
       - name: Run tests
-        run: flutter test
+        run: flutter test --dart-define=TMDB_TOKEN=${{ secrets.TMDB_TOKEN }}
 
   build_and_release_android:
     name: Build & Release Android
@@ -50,21 +49,23 @@ jobs:
           flutter-version: '3.x'
       - name: Get dependencies
         run: flutter pub get
-      - name: Build and sign APK
+      - name: Configure signing
+        if: ${{ secrets.MOBMOVIZZ_KEYSTORE != '' }}
         env:
-          KEYSTORE_PATH: /tmp/keystore.jks
+          MOBMOVIZZ_KEYSTORE: ${{ secrets.MOBMOVIZZ_KEYSTORE }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "${{ secrets.MOBMOVIZZ_KEYSTORE }}" | base64 -d > $KEYSTORE_PATH
-          flutter build apk --release \
-            --dart-define=KEYSTORE_PATH=$KEYSTORE_PATH \
-            --dart-define=KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD \
-            --dart-define=KEY_ALIAS=$KEY_ALIAS \
-            --dart-define=KEY_PASSWORD=$KEY_PASSWORD
+          echo "$MOBMOVIZZ_KEYSTORE" | base64 --decode > android/app/keystore.jks
+          echo "storePassword=$KEYSTORE_PASSWORD" > android/key.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
+          echo "keyAlias=$KEY_ALIAS" >> android/key.properties
+          echo "storeFile=keystore.jks" >> android/key.properties
+      - name: Build APK
+        run: flutter build apk --release --dart-define=TMDB_TOKEN=${{ secrets.TMDB_TOKEN }}
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -89,7 +90,7 @@ jobs:
 #          p12-password: ${{ secrets.IOS_P12_PASSWORD }}
 #      - run: flutter build ios --release
 #      - name: Upload IPA
-#        uses: actions/upload-artifact@v2
+#        uses: actions/upload-artifact@v4
 #        with:
 #          name: release-ipa
 #          path: build/ios/iphoneos/Runner.app
