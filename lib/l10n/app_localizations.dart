@@ -650,6 +650,24 @@ abstract class AppLocalizations {
   /// **'Upcoming'**
   String get upcoming;
 
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'hours'**
+  String get hours;
+
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get minutes;
+
+  /// No description provided for @permission_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission denied'**
+  String get permission_denied;
+
   /// No description provided for @notification_title.
   ///
   /// In en, this message translates to:

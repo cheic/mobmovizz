@@ -29,10 +29,9 @@ import 'package:mobmovizz/l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize notification service
+  // Initialize notification service (but don't request permissions at startup)
   try {
     await NotificationService.init();
-    await NotificationService.requestPermissions();
   } catch (e) {
     // Handle notification initialization errors silently in production
   }

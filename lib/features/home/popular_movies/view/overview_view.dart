@@ -140,18 +140,9 @@ class _DiscoverViewState extends State<DiscoverView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Section Title ──
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 14),
-          child: Text(
-            AppLocalizations.of(context)?.popular ?? 'Popular',
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-        ),
-
         // ── Hero Carousel ──
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.58,
+          height: MediaQuery.of(context).size.height * 0.65,
           child: PageView.builder(
             controller: _pageController,
             itemCount: movies.length,

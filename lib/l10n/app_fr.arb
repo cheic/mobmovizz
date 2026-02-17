@@ -100,6 +100,10 @@
   "top_rated": "Les Mieux Notés",
   "upcoming": "À Venir",
   
+  "hours": "heures",
+  "minutes": "minutes",
+  "permission_denied": "Permission refusée",
+  
   "notification_title": "🎬 Rappel MobMovizz",
   "notification_body": "N'oubliez pas le film \"{movieTitle}\" !",
   "@notification_body": {

@@ -309,9 +309,12 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
               color:
                   Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
           const SizedBox(width: 4),
-          Text(
-            formatRuntime(movie.runtime!) ?? '',
-            style: Theme.of(context).textTheme.bodyMedium,
+          Flexible(
+            child: Text(
+              formatRuntime(movie.runtime!, context) ?? '',
+              style: Theme.of(context).textTheme.bodyMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           _statDivider(context),
         ],

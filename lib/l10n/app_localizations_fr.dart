@@ -290,6 +290,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get upcoming => 'À Venir';
 
   @override
+  String get hours => 'heures';
+
+  @override
+  String get minutes => 'minutes';
+
+  @override
+  String get permission_denied => 'Permission refusée';
+
+  @override
   String get notification_title => '🎬 Rappel MobMovizz';
 
   @override

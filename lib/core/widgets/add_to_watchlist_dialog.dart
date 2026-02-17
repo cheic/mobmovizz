@@ -4,6 +4,7 @@ import 'package:mobmovizz/features/watchlist/watchlist.dart';
 import 'package:mobmovizz/core/utils/notification_date_validator.dart';
 import 'package:mobmovizz/core/utils/date_formatter.dart';
 import 'package:mobmovizz/l10n/app_localizations.dart';
+import 'package:mobmovizz/core/services/notification_service.dart';
 
 class AddToWatchlistDialog extends StatefulWidget {
   final int movieId;
@@ -154,32 +155,52 @@ class _AddToWatchlistDialogState extends State<AddToWatchlistDialog> {
           child: Text(l10n.cancel),
         ),
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
+            // Request notification permissions if not already granted
+            final hasPermission = await NotificationService.hasPermissions();
+            if (!hasPermission) {
+              final granted = await NotificationService.requestPermissions();
+              if (!granted) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.permission_denied),
+                    ),
+                  );
+                }
+                return;
+              }
+            }
+            
             // Validate the notification date before adding
             if (!NotificationDateValidator.isValidNotificationDate(selectedDate, widget.releaseDate)) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    NotificationDateValidator.getValidationErrorMessage(widget.releaseDate),
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      NotificationDateValidator.getValidationErrorMessage(widget.releaseDate),
+                    ),
                   ),
-                ),
-              );
+                );
+              }
               return;
             }
             
-            context.read<WatchlistBloc>().add(
-              AddToWatchlistEvent(
-                movieId: widget.movieId,
-                title: widget.title,
-                posterPath: widget.posterPath,
-                releaseDate: widget.releaseDate,
-                reminderDate: selectedDate,
-                notifyAgain: notifyAgain,
-                notificationTitle: l10n.notification_title,
-                notificationBody: l10n.notification_body(widget.title),
-              ),
-            );
-            Navigator.pop(context);
+            if (context.mounted) {
+              context.read<WatchlistBloc>().add(
+                AddToWatchlistEvent(
+                  movieId: widget.movieId,
+                  title: widget.title,
+                  posterPath: widget.posterPath,
+                  releaseDate: widget.releaseDate,
+                  reminderDate: selectedDate,
+                  notifyAgain: notifyAgain,
+                  notificationTitle: l10n.notification_title,
+                  notificationBody: l10n.notification_body(widget.title),
+                ),
+              );
+              Navigator.pop(context);
+            }
           },
           child: Text(l10n.add_to_watchlist),
         ),
