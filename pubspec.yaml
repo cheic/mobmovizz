@@ -47,7 +47,6 @@ dependencies:
   bloc: ^9.0.0
   carousel_slider_plus: ^7.0.1
   cached_network_image: ^3.4.1
-  rive: ^0.13.4
   flutter_platform_widgets: ^9.0.0
   palette_generator: ^0.3.3+4
   intl: ^0.20.1
@@ -86,7 +85,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/lang/
-    - assets/rive/
   generate: true
 
   # An image asset can refer to one or more resolution-specific "variants", see

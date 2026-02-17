@@ -560,15 +560,15 @@ Contient les modules transversaux utilisés par l'ensemble de l'application :
 
 Chaque fonctionnalité est isolée et auto-contenue :
 
-| Feature | Description | BLoC |
-|---------|-------------|------|
-| `home/popular_movies` | Films populaires | `PopularMoviesBloc` |
-| `home/upcomings` | Films à venir | `UpcomingsBloc` |
-| `home/top_rated` | Films mieux notés | `TopRatedBloc` |
-| `genres/movies_genre_list` | Liste des genres | `MovieGenresBloc` |
-| `genres/movies_by_genre` | Films par genre | `MoviesByGenreBloc` |
-| `search` | Recherche de films | `SearchMovieBloc` |
-| `movie_details` | Détails d'un film | `MovieDetailsBloc` |
+| Feature                   | Description | BLoC |
+|---------------------------|-------------|------|
+| `home/popular_movies`     | Films populaires | `PopularMoviesBloc` |
+| `home/upcomings`          | Films à venir | `UpcomingsBloc` |
+| `home/top_rated`          | Films mieux notés | `TopRatedBloc` |
+| `genres/movies_genre_list`| Liste des genres | `MovieGenresBloc` |
+| `genres/movies_by_genre`  | Films par genre | `MoviesByGenreBloc` |
+| `search`                  | Recherche de films | `SearchMovieBloc` |
+| `movie_details`           | Détails d'un film | `MovieDetailsBloc` |
 | `watchlist` | Liste de surveillance | `WatchlistBloc` |
 | `favorites` | Films favoris | `FavoritesBloc` |
 
@@ -763,43 +763,6 @@ Types d'erreurs (`lib/core/error/failure.dart`) :
 - `ServerFailure` — Erreur serveur ou réseau
 - `CacheFailure` — Erreur de cache local
 
-## Navigation
-
-### Structure de navigation
-
-L'application utilise un `IndexedStack` avec une barre de navigation animée Rive :
-
-```
-┌──────────────────────────────────────┐
-│            IndexedStack              │
-│  ┌────────────────────────────────┐  │
-│  │  [0] Accueil (Discover)       │  │
-│  │  [1] Genres                   │  │
-│  │  [2] Recherche                │  │
-│  │  [3] Watchlist                │  │
-│  └────────────────────────────────┘  │
-├──────────────────────────────────────┤
-│       RiveBottomNavBar (4 tabs)      │
-│    🏠  🎭  🔍  💾                    │
-└──────────────────────────────────────┘
-```
-
-### NavigationCubit
-
-La navigation est gérée par un `Cubit` simple :
-
-```dart
-class NavigationCubit extends Cubit<NavigationState> {
-  void getNavBarItem(NavbarItem item) {
-    emit(NavigationState(item, item.index));
-  }
-}
-```
-
-### Animations Rive
-
-La barre de navigation utilise des animations vectorielles Rive pour une expérience utilisateur fluide et interactive.
-
 ## Thèmes et design
 
 ### Material Design 3
@@ -811,11 +774,11 @@ L'application utilise le système de design Material 3 avec deux thèmes :
 
 ### Palette de couleurs
 
-| Couleur | Hex | Usage |
-|---------|-----|-------|
-| Royal Blue | `#4169E1` | Couleur primaire |
-| Surface Dim | `#111318` | Fond sombre |
-| Snow | `#FFFAFA` | Fond clair |
+| Couleur     | Hex       | Usage            |
+|-------------|-----------|------------------|
+| Royal Blue  | `#4169E1` | Couleur primaire |
+| Surface Dim | `#111318` | Fond sombre      |
+| Snow        | `#FFFAFA` | Fond clair       |
 
 ### ThemeBloc
 
@@ -836,13 +799,13 @@ Les polices sont chargées dynamiquement via Google Fonts pour une typographie m
 
 L'application dispose de widgets dédiés pour chaque état :
 
-| Widget | Usage |
-|--------|-------|
-| `LoadingStateWidget` | Indicateur de chargement |
-| `ErrorStateWidget` | Affichage d'erreur avec bouton réessayer |
-| `EmptyStateWidget` | État vide personnalisable |
-| `NoInternetWidget` | Pas de connexion internet |
-| `NoSearchResultsWidget` | Aucun résultat de recherche |
+| Widget                  | Usage                                    |
+|-------------------------|------------------------------------------|
+| `LoadingStateWidget`    | Indicateur de chargement                 |
+| `ErrorStateWidget`      | Affichage d'erreur avec bouton réessayer |
+| `EmptyStateWidget`      | État vide personnalisable                |
+| `NoInternetWidget`      | Pas de connexion internet                |
+| `NoSearchResultsWidget` | Aucun résultat de recherche              |
 
 ### ErrorHandlerWidget
 
