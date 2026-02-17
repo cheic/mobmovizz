@@ -304,10 +304,39 @@ Push sur main → Tests → Build APK signé → Artefact
 
 | Secret | Description |
 |--------|-------------|
+| `TMDB_TOKEN` | Token d'accès API TMDB (Bearer Token) |
 | `KEYSTORE_BASE64` | Fichier keystore encodé en base64 |
 | `KEYSTORE_PASSWORD` | Mot de passe du keystore |
 | `KEY_ALIAS` | Alias de la clé de signature |
 | `KEY_PASSWORD` | Mot de passe de la clé |
+
+### Configuration du keystore pour le CI/CD
+
+Le fichier keystore (`.jks`) ne doit **jamais** être commité dans le dépôt. Pour le CI/CD, il est stocké sous forme encodée en base64 dans les GitHub Secrets.
+
+#### 1. Encoder le keystore en base64
+
+```bash
+base64 -i /chemin/vers/votre/mobmovizz.jks | tr -d '\n'
+```
+
+> Par exemple, si votre fichier est situé à `/Users/aki/Documents/dev/keys/mobmovizz.jks` :
+>
+> ```bash
+> base64 -i /Users/aki/Documents/dev/keys/mobmovizz.jks | tr -d '\n'
+> ```
+
+#### 2. Ajouter les secrets dans GitHub
+
+1. Accédez à votre dépôt GitHub → **Settings** → **Secrets and variables** → **Actions**
+2. Cliquez sur **New repository secret** et ajoutez chaque secret :
+   - `KEYSTORE_BASE64` : collez la sortie de la commande `base64` ci-dessus
+   - `KEYSTORE_PASSWORD` : le mot de passe de votre keystore
+   - `KEY_ALIAS` : l'alias de votre clé (ex. `votre_alias`)
+   - `KEY_PASSWORD` : le mot de passe de votre clé
+   - `TMDB_TOKEN` : votre Bearer Token TMDB
+
+> ⚠️ **Important** : Ne stockez jamais le fichier `.jks` dans le dépôt Git. Le pipeline CI/CD décode automatiquement le secret `KEYSTORE_BASE64` pour recréer le fichier keystore lors du build.
 
 ## 🌐 Localisation
 
