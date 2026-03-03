@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobmovizz/core/common/common_header.dart';
 import 'package:mobmovizz/core/theme/colors.dart';
+import 'package:mobmovizz/core/utils/rating.dart';
 import 'package:mobmovizz/core/widgets/circular_progress.dart';
 import 'package:mobmovizz/features/home/top_rated/bloc/top_rated_bloc.dart';
 import 'package:mobmovizz/features/movie_details/view/movie_details_view.dart';
@@ -116,7 +117,7 @@ class TopRatedView extends StatelessWidget {
                                               Icon(Icons.star_rounded, color: accentAmber, size: 14),
                                               const SizedBox(width: 2),
                                               Text(
-                                                item.voteAverage!.toStringAsFixed(1),
+                                                formatRatingOutOfFive(item.voteAverage),
                                                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                                   color: Colors.white70,
                                                 ),

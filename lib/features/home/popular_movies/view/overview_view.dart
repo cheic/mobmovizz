@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobmovizz/core/common/info.dart';
 import 'package:mobmovizz/core/theme/colors.dart';
 import 'package:mobmovizz/core/utils/constants.dart';
+import 'package:mobmovizz/core/utils/rating.dart';
 import 'package:mobmovizz/core/widgets/circular_progress.dart';
 import 'package:mobmovizz/core/widgets/error_handler_widget.dart';
 import 'package:mobmovizz/core/widgets/section_error_wrapper.dart';
@@ -225,8 +226,9 @@ class _DiscoverViewState extends State<DiscoverView> {
                                           color: accentAmber, size: 18),
                                       const SizedBox(width: 4),
                                       Text(
-                                        movie.voteAverage
-                                            .toStringAsFixed(1),
+                                        formatRatingOutOfFive(
+                                          movie.voteAverage,
+                                        ),
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelLarge

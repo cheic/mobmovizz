@@ -295,7 +295,7 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
           Icon(Icons.star_rounded, color: accentAmber, size: 20),
           const SizedBox(width: 4),
           Text(
-            movie.voteAverage!.toStringAsFixed(1),
+            formatRatingOutOfFive(movie.voteAverage),
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
