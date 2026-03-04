@@ -21,13 +21,11 @@ class WatchlistHomeWidget extends StatelessWidget {
           }
 
           final now = DateTime.now();
-          final limitDate = now.add(const Duration(days: 7));
 
-          // Show only upcoming reminders (next 7 days)
+          // Show upcoming reminders
           final upcomingItems = state.watchlist
               .where((item) => item.reminderDate != null &&
-                               item.reminderDate!.isAfter(now) &&
-                               item.reminderDate!.isBefore(limitDate))
+                               item.reminderDate!.isAfter(now))
               .toList()
             ..sort((a, b) => a.reminderDate!.compareTo(b.reminderDate!));
 
@@ -42,7 +40,8 @@ class WatchlistHomeWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'No reminders scheduled in the next 7 days.',
+                  AppLocalizations.of(context)?.no_upcoming_reminders ??
+                      'No upcoming reminders scheduled.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),

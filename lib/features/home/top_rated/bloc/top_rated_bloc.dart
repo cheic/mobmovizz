@@ -23,7 +23,7 @@ class TopRatedBloc extends Bloc<TopRatedEvent, TopRatedState> {
 
     failureOrData.fold(
         (failure) =>
-            emit(TopRatedError(failure.message ?? 'Some error occurs')),
+        emit(TopRatedError(failure.message ?? 'Some error occurred')),
         (data) => emit(TopRatedLoaded(data)));
   }
 }

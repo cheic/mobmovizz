@@ -19,6 +19,8 @@ class WatchlistView extends StatefulWidget {
 }
 
 class _WatchlistViewState extends State<WatchlistView> {
+  bool _isUpdatingReminder = false;
+
   @override
   void initState() {
     super.initState();
@@ -29,74 +31,97 @@ class _WatchlistViewState extends State<WatchlistView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: mainAppBar(context: context,title: AppLocalizations.of(context)?.my_watchlist ?? "My Watchlist"),
-      body: BlocBuilder<WatchlistBloc, WatchlistState>(
-        builder: (context, state) {
-          if (state is WatchlistLoading) {
-            return Center(child: mainCircularProgress());
-          } else if (state is WatchlistLoaded) {
-            if (state.watchlist.isEmpty) {
+      body: BlocListener<WatchlistBloc, WatchlistState>(
+        listener: (context, state) {
+          if (!_isUpdatingReminder) return;
+
+          if (state is WatchlistLoaded) {
+            _isUpdatingReminder = false;
+            final l10n = AppLocalizations.of(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  l10n?.watchlist_reminder_updated_success ??
+                      'Reminder updated successfully',
+                ),
+              ),
+            );
+          } else if (state is WatchlistError) {
+            _isUpdatingReminder = false;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+        },
+        child: BlocBuilder<WatchlistBloc, WatchlistState>(
+          builder: (context, state) {
+            if (state is WatchlistLoading) {
+              return Center(child: mainCircularProgress());
+            } else if (state is WatchlistLoaded) {
+              if (state.watchlist.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.bookmark_border,
+                        size: 64,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        AppLocalizations.of(context)?.your_watchlist_is_empty ?? "Your watchlist is empty",
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        AppLocalizations.of(context)?.add_movies_you_want_to_watch_later ?? "Add movies you want to watch later",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return ListView.builder(
+                padding: EdgeInsets.all(16),
+                itemCount: state.watchlist.length,
+                itemBuilder: (context, index) {
+                  final item = state.watchlist[index];
+                  return _buildWatchlistItem(context, item);
+                },
+              );
+            } else if (state is WatchlistError) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.bookmark_border,
-                      size: 64,
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                    ),
+                    Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
                     SizedBox(height: 16),
                     Text(
-                      AppLocalizations.of(context)?.your_watchlist_is_empty ?? "Your watchlist is empty",
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                      state.message,
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                      textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      AppLocalizations.of(context)?.add_movies_you_want_to_watch_later ?? "Add movies you want to watch later",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                      ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<WatchlistBloc>().add(LoadWatchlistEvent());
+                      },
+                      child: Text(AppLocalizations.of(context)?.retry ?? 'Retry'),
                     ),
                   ],
                 ),
               );
             }
 
-            return ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: state.watchlist.length,
-              itemBuilder: (context, index) {
-                final item = state.watchlist[index];
-                return _buildWatchlistItem(context, item);
-              },
-            );
-          } else if (state is WatchlistError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
-                  SizedBox(height: 16),
-                  Text(
-                    state.message,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<WatchlistBloc>().add(LoadWatchlistEvent());
-                    },
-                    child: Text(AppLocalizations.of(context)?.retry ?? 'Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return Container();
-        },
+            return Container();
+          },
+        ),
       ),
     );
   }
@@ -449,6 +474,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                   notifyAgain: notifyAgain,
                   addedDate: item.addedDate,
                 );
+                _isUpdatingReminder = true;
                 context.read<WatchlistBloc>().add(
                   UpdateWatchlistItemEvent(
                     movieId: item.id,
@@ -458,7 +484,6 @@ class _WatchlistViewState extends State<WatchlistView> {
                   ),
                 );
                 Navigator.of(dialogContext).pop();
-                setState(() {}); // Force le rebuild du parent
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,

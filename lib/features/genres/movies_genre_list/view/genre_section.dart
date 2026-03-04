@@ -17,62 +17,67 @@ class GenreSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => MoviesGridViewPage(
-                    genreId: genreId,
-                    genreName: genreName,
+    return BlocProvider(
+      create: (context) =>
+          MoviesByGenreBloc(GetIt.I<MoviesByGenreService>())
+            ..add(FetchMoviesByGenre(genreId)),
+      child: BlocBuilder<MoviesByGenreBloc, MoviesByGenreState>(
+        builder: (context, state) {
+          if (state is! MoviesByGenreLoaded) {
+            return const SizedBox.shrink();
+          }
+
+          final movies = state.movies.results ?? [];
+          if (movies.isEmpty) {
+            return const SizedBox.shrink();
+          }
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => MoviesGridViewPage(
+                            genreId: genreId,
+                            genreName: genreName,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          genreName,
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        const SizedBox(width: 6),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1),
+                          child: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              );
-            },
-            child: Row(
-              children: [
-                Text(
-                  genreName,
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(width: 6),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ],
-            ),
-          ),
-        ),
-        BlocProvider(
-          create: (context) =>
-              MoviesByGenreBloc(GetIt.I<MoviesByGenreService>())
-                ..add(FetchMoviesByGenre(genreId)),
-          child: BlocBuilder<MoviesByGenreBloc, MoviesByGenreState>(
-            buildWhen: (previous, current) => current is MoviesByGenreLoaded,
-            builder: (context, state) {
-              if (state is MoviesByGenreLoading) {
-                return Center(
-                    child: SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: mainCircularProgress(),
-                ));
-              } else if (state is MoviesByGenreLoaded) {
-                return SizedBox(
+                SizedBox(
                   height: 210,
                   child: ListView.builder(
                     key: PageStorageKey<String>('genre_$genreId'),
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: state.movies.results?.length ?? 0,
+                    itemCount: movies.length,
                     itemBuilder: (context, index) {
-                      final movie = state.movies.results![index];
+                      final movie = movies[index];
                       return GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(
@@ -121,24 +126,12 @@ class GenreSection extends StatelessWidget {
                       );
                     },
                   ),
-                );
-              } else if (state is MoviesByGenreError) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Text(
-                    state.message,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
-        ),
-      ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

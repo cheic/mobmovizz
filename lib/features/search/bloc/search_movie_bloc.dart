@@ -33,7 +33,7 @@ class SearchMovieBloc extends Bloc<SearchMovieEvent, SearchMovieState> {
 
     failureOrData.fold(
         (failure) =>
-            emit(SearchMovieError(failure.message ?? "Some error occurs")),
+        emit(SearchMovieError(failure.message ?? "Some error occurred")),
         (data) {
       currentPage = 1;
       totalPages = data.totalPages!;
@@ -55,7 +55,7 @@ class SearchMovieBloc extends Bloc<SearchMovieEvent, SearchMovieState> {
 
     failureOrData.fold(
         (failure) =>
-            emit(SearchMovieError(failure.message ?? "Some error occurs")),
+        emit(SearchMovieError(failure.message ?? "Some error occurred")),
         (data) {
       currentPage = 1;
       totalPages = data.totalPages!;

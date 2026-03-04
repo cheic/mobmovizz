@@ -449,7 +449,7 @@ abstract class AppLocalizations {
   /// No description provided for @some_error_occurs.
   ///
   /// In en, this message translates to:
-  /// **'Some error occurs'**
+  /// **'Some error occurred'**
   String get some_error_occurs;
 
   /// No description provided for @no_date.
@@ -475,6 +475,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Coming Up in Watchlist'**
   String get coming_up_in_watchlist;
+
+  /// No description provided for @no_upcoming_reminders.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming reminders scheduled.'**
+  String get no_upcoming_reminders;
+
+  /// No description provided for @watchlist_reminder_updated_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder updated successfully.'**
+  String get watchlist_reminder_updated_success;
 
   /// No description provided for @view_all.
   ///

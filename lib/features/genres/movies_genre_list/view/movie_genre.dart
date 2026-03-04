@@ -46,17 +46,10 @@ class _MovieGenreState extends State<MovieGenre>
               itemCount: state.movieGenresListModel.genres!.length,
               itemBuilder: (context, index) {
                 final genre = state.movieGenresListModel.genres![index];
-                return Padding(
-                  padding: EdgeInsets.only(
-                      bottom:
-                          index == state.movieGenresListModel.genres!.length - 1
-                              ? 0
-                              : 8.0), // Réduit de 16.0 à 8.0
-                  child: GenreSection(
-                    key: Key('genre_${genre.id}'),
-                    genreId: genre.id!,
-                    genreName: genre.name!,
-                  ),
+                return GenreSection(
+                  key: Key('genre_${genre.id}'),
+                  genreId: genre.id!,
+                  genreName: genre.name!,
                 );
               },
             );

@@ -62,11 +62,13 @@
   
   "error": "Error",
   "no_movies_available": "No movies available.",
-  "some_error_occurs": "Some error occurs",
+  "some_error_occurs": "Some error occurred",
   "no_date": "No date",
   "today": "Today!",
   "tomorrow": "Tomorrow",
   "coming_up_in_watchlist": "Coming Up in Watchlist",
+  "no_upcoming_reminders": "No upcoming reminders scheduled.",
+  "watchlist_reminder_updated_success": "Reminder updated successfully.",
   "view_all": "View All",
   
   "theme": "Theme",

@@ -6,6 +6,7 @@ import 'package:mobmovizz/core/common/common_header.dart';
 import 'package:mobmovizz/core/theme/colors.dart';
 import 'package:mobmovizz/core/utils/rating.dart';
 import 'package:mobmovizz/core/widgets/circular_progress.dart';
+import 'package:mobmovizz/core/widgets/list_movie_item.dart';
 import 'package:mobmovizz/features/home/top_rated/bloc/top_rated_bloc.dart';
 import 'package:mobmovizz/features/movie_details/view/movie_details_view.dart';
 import 'package:mobmovizz/l10n/app_localizations.dart';
@@ -26,8 +27,16 @@ class TopRatedView extends StatelessWidget {
             children: [
               CommonHeader(
                 headerTitle: localizations?.top_rated ?? 'Top Rated',
-                headerText: '',
-                onTap: () {},
+                headerText: localizations?.view_all ?? 'View All',
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => TopRatedAllView(
+                        movies: state.upcomingModel.results ?? [],
+                      ),
+                    ),
+                  );
+                },
               ),
               CarouselSlider(
                 options: CarouselOptions(
@@ -145,6 +154,25 @@ class TopRatedView extends StatelessWidget {
           return const SizedBox.shrink();
         }
       },
+    );
+  }
+}
+
+class TopRatedAllView extends StatelessWidget {
+  final List<dynamic> movies;
+
+  const TopRatedAllView({super.key, required this.movies});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)?.top_rated ?? 'Top Rated'),
+      ),
+      body: ListView.builder(
+        itemCount: movies.length,
+        itemBuilder: (context, index) => buildMovieListItem(context, movies[index]),
+      ),
     );
   }
 }

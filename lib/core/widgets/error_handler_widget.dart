@@ -32,7 +32,7 @@ class ErrorHandlerWidget extends StatelessWidget {
       errorIcon = customIcon!;
     } else if (errorMessage == null || errorMessage!.isEmpty) {
       // Erreur générique
-      displayMessage = localizations?.some_error_occurs ?? 'Some error occurs';
+      displayMessage = localizations?.some_error_occurs ?? 'Some error occurred';
       errorIcon = Icons.error_outline;
     } else if (_isNetworkError(errorMessage!)) {
       // Erreur de connexion réseau

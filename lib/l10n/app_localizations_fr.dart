@@ -199,6 +199,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get coming_up_in_watchlist => 'À venir dans la watchlist';
 
   @override
+    String get no_upcoming_reminders => 'Aucun rappel à venir n\'est planifié.';
+
+    @override
+    String get watchlist_reminder_updated_success => 'Rappel mis à jour avec succès.';
+
+    @override
   String get view_all => 'Voir tout';
 
   @override
