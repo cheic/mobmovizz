@@ -184,7 +184,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_movies_available => 'No movies available.';
 
   @override
-    String get some_error_occurs => 'Some error occurred';
+  String get some_error_occurs => 'Some error occurred';
 
   @override
   String get no_date => 'No date';
@@ -199,12 +199,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coming_up_in_watchlist => 'Coming Up in Watchlist';
 
   @override
-    String get no_upcoming_reminders => 'No upcoming reminders scheduled.';
+  String get no_upcoming_reminders => 'No upcoming reminders scheduled.';
 
-    @override
-    String get watchlist_reminder_updated_success => 'Reminder updated successfully.';
+  @override
+  String get watchlist_reminder_updated_success =>
+      'Reminder updated successfully.';
 
-    @override
+  @override
   String get view_all => 'View All';
 
   @override
