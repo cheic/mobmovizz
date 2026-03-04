@@ -112,12 +112,81 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final currentIndex = context.watch<NavigationCubit>().state.index;
     final l10n = AppLocalizations.of(context);
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final navItems = [
+      (
+        icon: const Icon(Icons.explore_outlined),
+        selectedIcon: const Icon(Icons.explore),
+        label: l10n?.home ?? 'Discover',
+      ),
+      (
+        icon: const Icon(Icons.category_outlined),
+        selectedIcon: const Icon(Icons.category),
+        label: l10n?.genre ?? 'Genres',
+      ),
+      (
+        icon: const Icon(Icons.search_rounded),
+        selectedIcon: const Icon(Icons.search),
+        label: l10n?.search ?? 'Search',
+      ),
+      (
+        icon: const Icon(Icons.bookmark_outline_rounded),
+        selectedIcon: const Icon(Icons.bookmark),
+        label: l10n?.favorites ?? 'Watchlist',
+      ),
+    ];
+
+    final content = IndexedStack(
+      index: currentIndex,
+      children: bottomNavScreen,
+    );
+
+    if (isLandscape) {
+      return Scaffold(
+        body: SafeArea(
+          child: Row(
+            children: [
+              NavigationRail(
+                selectedIndex: currentIndex,
+                onDestinationSelected: (index) {
+                  context
+                      .read<NavigationCubit>()
+                      .getNavBarItem(NavbarItem.values[index]);
+                },
+                labelType: NavigationRailLabelType.selected,
+                destinations: navItems
+                    .map(
+                      (item) => NavigationRailDestination(
+                        icon: item.icon,
+                        selectedIcon: item.selectedIcon,
+                        label: Text(item.label),
+                      ),
+                    )
+                    .toList(),
+              ),
+              VerticalDivider(
+                width: 1,
+                thickness: 0.5,
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+              Expanded(
+                child: SafeArea(
+                  left: false,
+                  top: false,
+                  bottom: false,
+                  right: true,
+                  child: content,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     
     return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
-        children: bottomNavScreen,
-      ),
+      body: content,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
@@ -132,28 +201,15 @@ class _MyHomePageState extends State<MyHomePage> {
           onDestinationSelected: (index) {
             context.read<NavigationCubit>().getNavBarItem(NavbarItem.values[index]);
           },
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.explore_outlined),
-              selectedIcon: const Icon(Icons.explore),
-              label: l10n?.home ?? 'Discover',
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.category_outlined),
-              selectedIcon: const Icon(Icons.category),
-              label: l10n?.genre ?? 'Genres',
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.search_rounded),
-              selectedIcon: const Icon(Icons.search),
-              label: l10n?.search ?? 'Search',
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.bookmark_outline_rounded),
-              selectedIcon: const Icon(Icons.bookmark),
-              label: l10n?.favorites ?? 'Watchlist',
-            ),
-          ],
+          destinations: navItems
+              .map(
+                (item) => NavigationDestination(
+                  icon: item.icon,
+                  selectedIcon: item.selectedIcon,
+                  label: item.label,
+                ),
+              )
+              .toList(),
         ),
       ),
     );

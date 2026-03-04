@@ -11,12 +11,15 @@ class TopRatedService {
 
   TopRatedService(this._apiService);
 
-    Future<Either<Failure, UpcomingModel>> getTopRated({BuildContext? context}) async {
+    Future<Either<Failure, UpcomingModel>> getTopRated({BuildContext? context, int page = 1}) async {
     try {
       final language = LocalizationService.getBestAvailableLanguage(context);
       
       final response = await _apiService.get(
         endPoint: 'movie/top_rated',
+        params: {
+          'page': page,
+        },
         language: language,
       );
       return Right(UpcomingModel.fromJson(response.data));

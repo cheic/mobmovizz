@@ -47,6 +47,13 @@ class _SearchMovieView extends State<SearchMovieView> {
     _filterController = FilterGridListController();
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
   void _onScroll() {
     if (_scrollController.position.pixels == 0) {
       if (!_isAtTop) {
@@ -193,8 +200,8 @@ class _SearchMovieView extends State<SearchMovieView> {
                     return GridView.builder(
                       controller: _scrollController,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 180,
                         childAspectRatio: 0.67,
                         mainAxisSpacing: 12,
                         crossAxisSpacing: 12,

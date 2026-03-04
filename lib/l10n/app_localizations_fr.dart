@@ -196,7 +196,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tomorrow => 'Demain';
 
   @override
-  String get coming_up_in_watchlist => 'À venir dans la watchlist';
+    String get coming_up_in_watchlist => 'À venir';
 
   @override
   String get no_upcoming_reminders => 'Aucun rappel à venir n\'est planifié.';

@@ -10,12 +10,15 @@ class UpcomingService {
 
   UpcomingService(this._apiService);
 
-    Future<Either<Failure, UpcomingModel>> getUpcomings({BuildContext? context}) async {
+    Future<Either<Failure, UpcomingModel>> getUpcomings({BuildContext? context, int page = 1}) async {
     try {
       final language = LocalizationService.getBestAvailableLanguage(context);
       
       final response = await _apiService.get(
         endPoint: 'movie/upcoming',
+        params: {
+          'page': page,
+        },
         language: language,
       );
       return Right(UpcomingModel.fromJson(response.data));

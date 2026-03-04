@@ -2,12 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobmovizz/core/common/common_header.dart';
 import 'package:mobmovizz/core/theme/colors.dart';
+import 'package:mobmovizz/core/utils/app_preferences.dart';
 import 'package:mobmovizz/core/utils/rating.dart';
 import 'package:mobmovizz/core/widgets/circular_progress.dart';
 import 'package:mobmovizz/core/widgets/list_movie_item.dart';
 import 'package:mobmovizz/features/home/top_rated/bloc/top_rated_bloc.dart';
+import 'package:mobmovizz/features/home/top_rated/data/top_rated_service.dart';
+import 'package:mobmovizz/features/home/upcomings/data/models/upcoming_model.dart';
 import 'package:mobmovizz/features/movie_details/view/movie_details_view.dart';
 import 'package:mobmovizz/l10n/app_localizations.dart';
 
@@ -32,7 +36,9 @@ class TopRatedView extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => TopRatedAllView(
-                        movies: state.upcomingModel.results ?? [],
+                        initialMovies: state.upcomingModel.results ?? [],
+                        initialPage: state.upcomingModel.page ?? 1,
+                        totalPages: state.upcomingModel.totalPages ?? 1,
                       ),
                     ),
                   );
@@ -40,8 +46,8 @@ class TopRatedView extends StatelessWidget {
               ),
               CarouselSlider(
                 options: CarouselOptions(
-                  aspectRatio: 4 / 3,
-                  viewportFraction: 0.52,
+                  aspectRatio: MediaQuery.of(context).orientation == Orientation.landscape ? 16 / 9 : 4 / 3,
+                  viewportFraction: MediaQuery.of(context).orientation == Orientation.landscape ? 0.65 : 0.52,
                   initialPage: 0,
                   enableInfiniteScroll: true,
                   reverse: false,
@@ -159,20 +165,195 @@ class TopRatedView extends StatelessWidget {
 }
 
 class TopRatedAllView extends StatelessWidget {
-  final List<dynamic> movies;
+  final List<Result> initialMovies;
+  final int initialPage;
+  final int totalPages;
 
-  const TopRatedAllView({super.key, required this.movies});
+  const TopRatedAllView({
+    super.key,
+    required this.initialMovies,
+    required this.initialPage,
+    required this.totalPages,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _TopRatedAllBody(
+      initialMovies: initialMovies,
+      initialPage: initialPage,
+      totalPages: totalPages,
+    );
+  }
+}
+
+class _TopRatedAllBody extends StatefulWidget {
+  final List<Result> initialMovies;
+  final int initialPage;
+  final int totalPages;
+
+  const _TopRatedAllBody({
+    required this.initialMovies,
+    required this.initialPage,
+    required this.totalPages,
+  });
+
+  @override
+  State<_TopRatedAllBody> createState() => _TopRatedAllBodyState();
+}
+
+class _TopRatedAllBodyState extends State<_TopRatedAllBody> {
+  late final TopRatedService _topRatedService;
+  late final AppPreferences _appPreferences;
+  late final ScrollController _scrollController;
+
+  late List<Result> _movies;
+  late int _currentPage;
+  late int _totalPages;
+
+  bool _isLoadingMore = false;
+  bool _isGridView = true;
+  String? _loadMoreError;
+
+  @override
+  void initState() {
+    super.initState();
+    _topRatedService = GetIt.I<TopRatedService>();
+    _appPreferences = GetIt.I<AppPreferences>();
+    _scrollController = ScrollController()..addListener(_onScroll);
+
+    _movies = List<Result>.from(widget.initialMovies);
+    _currentPage = widget.initialPage;
+    _totalPages = widget.totalPages;
+    _isGridView = _appPreferences.getGridView();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients || _isLoadingMore) return;
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 300) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_isLoadingMore || _currentPage >= _totalPages) return;
+
+    setState(() => _isLoadingMore = true);
+
+    final result = await _topRatedService.getTopRated(page: _currentPage + 1);
+
+    if (!mounted) return;
+
+    result.fold(
+      (failure) {
+        setState(() {
+          _loadMoreError = 'Failed to load more movies. Please try again.';
+          _isLoadingMore = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_loadMoreError!),
+            action: SnackBarAction(
+              label: 'Retry',
+              onPressed: _loadMore,
+            ),
+          ),
+        );
+      },
+      (data) {
+        setState(() {
+          _loadMoreError = null;
+          _currentPage = data.page ?? (_currentPage + 1);
+          _totalPages = data.totalPages ?? _totalPages;
+          _movies.addAll(data.results ?? []);
+          _isLoadingMore = false;
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)?.top_rated ?? 'Top Rated'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _isGridView = !_isGridView;
+              });
+              _appPreferences.setGridView(_isGridView);
+            },
+            icon: Icon(_isGridView ? Icons.list : Icons.grid_on),
+          ),
+        ],
       ),
-      body: ListView.builder(
-        itemCount: movies.length,
-        itemBuilder: (context, index) => buildMovieListItem(context, movies[index]),
-      ),
+      body: _isGridView
+          ? GridView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(8),
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 180,
+                childAspectRatio: 0.7,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+              ),
+              itemCount: _movies.length + (_isLoadingMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index >= _movies.length) {
+                  return Center(child: mainCircularProgress());
+                }
+                final movie = _movies[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MovieDetailsView(movieId: movie.id!),
+                      ),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: (movie.posterPath != null && movie.posterPath!.isNotEmpty)
+                        ? CachedNetworkImage(
+                            imageUrl: 'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            color: Theme.of(context).colorScheme.surfaceContainer,
+                            child: Icon(
+                              Icons.image_outlined,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.5),
+                              size: 50,
+                            ),
+                          ),
+                  ),
+                );
+              },
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              itemCount: _movies.length + (_isLoadingMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index >= _movies.length) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Center(child: mainCircularProgress()),
+                  );
+                }
+                return buildMovieListItem(context, _movies[index]);
+              },
+            ),
     );
   }
 }

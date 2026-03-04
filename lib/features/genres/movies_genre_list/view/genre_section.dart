@@ -57,13 +57,10 @@ class GenreSection extends StatelessWidget {
                           style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         const SizedBox(width: 6),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 1),
-                          child: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 16,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 14,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ],
                     ),

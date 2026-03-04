@@ -19,7 +19,7 @@ class WatchlistView extends StatefulWidget {
 }
 
 class _WatchlistViewState extends State<WatchlistView> {
-  bool _isUpdatingReminder = false;
+  int? _updatingMovieId;
 
   @override
   void initState() {
@@ -33,24 +33,31 @@ class _WatchlistViewState extends State<WatchlistView> {
       appBar: mainAppBar(context: context,title: AppLocalizations.of(context)?.my_watchlist ?? "My Watchlist"),
       body: BlocListener<WatchlistBloc, WatchlistState>(
         listener: (context, state) {
-          if (!_isUpdatingReminder) return;
+          if (_updatingMovieId == null) return;
 
           if (state is WatchlistLoaded) {
-            _isUpdatingReminder = false;
             final l10n = AppLocalizations.of(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
+                duration: const Duration(seconds: 2),
                 content: Text(
                   l10n?.watchlist_reminder_updated_success ??
                       'Reminder updated successfully',
                 ),
               ),
             );
+            _updatingMovieId = null;
           } else if (state is WatchlistError) {
-            _isUpdatingReminder = false;
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(
+                duration: const Duration(seconds: 3),
+                content: Text(state.message),
+              ),
             );
+            _updatingMovieId = null;
+          } else if (state is WatchlistInitial) {
+            // Reset if state goes back to initial
+            _updatingMovieId = null;
           }
         },
         child: BlocBuilder<WatchlistBloc, WatchlistState>(
@@ -474,7 +481,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                   notifyAgain: notifyAgain,
                   addedDate: item.addedDate,
                 );
-                _isUpdatingReminder = true;
+                _updatingMovieId = item.id;
                 context.read<WatchlistBloc>().add(
                   UpdateWatchlistItemEvent(
                     movieId: item.id,
